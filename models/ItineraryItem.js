@@ -1,4 +1,3 @@
-const { required, date } = require("joi");
 const mongoose = require("mongoose");
 
 const ItineraryItemSchema = new mongoose.Schema(
@@ -38,7 +37,7 @@ const ItineraryItemSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["interested", "RSVPd"],
+      enum: ["interested", "RSVP'd"],
       default: "interested",
     },
     createdBy: {
