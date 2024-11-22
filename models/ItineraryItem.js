@@ -24,6 +24,10 @@ const ItineraryItemSchema = new mongoose.Schema(
         type: String,
         required: [true, "Error: no state provided for itinerary item."],
       },
+      postalCode: {
+        type: String,
+        required: [true, "Error: no zipcode provided for itinerary item."],
+      },
       coordinates: {
         lat: {
           type: Number,
@@ -35,12 +39,7 @@ const ItineraryItemSchema = new mongoose.Schema(
         },
       },
     },
-    status: {
-      type: String,
-      enum: ["interested", "RSVP'd"],
-      default: "interested",
-    },
-    createdBy: {
+    user: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: [true, "Please provide user."],
