@@ -21,7 +21,6 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Please provide email'],
         match: [/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, 'Please provide a valid email'],
-        index: true,
         lowercase: true,
         unique: true, 
     },
@@ -36,12 +35,17 @@ const UserSchema = new mongoose.Schema({
             message: 'Password must include at least one uppercase letter, one lowercase letter, and one number',
         }
     },
-});
+    zipCode: {
+        type: String,
+        required: [true, 'Please provide zip code'],
+        match: [/^\d{5}(-\d{4})?$/, 'Please provide a valid zip code'],
+    }
+}, { timestamps: true });
 
 UserSchema.pre('save', async function(next) {
-    if (this.email) {
-        this.email = this.email.toLowerCase().trim();
-    }
+    this.email = this.email.toLowerCase().trim();
+    this.firstName = this.firstName.trim();
+    this.lastName = this.lastName.trim();
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
     next();
