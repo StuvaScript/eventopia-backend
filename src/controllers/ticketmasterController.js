@@ -1,5 +1,8 @@
 const axios = require("axios");
+const dotenv = require("dotenv");
+dotenv.config();
 
+// API key from .env file
 const apiKey = process.env.TICKETMASTER_API_KEY;
 
 exports.searchEvents = async (req, res) => {
@@ -14,16 +17,18 @@ exports.searchEvents = async (req, res) => {
 
   // Build base URL with required parameters
   let url = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${apiKey}&city=${city}&stateCode=${stateCode}`;
-  
+
   // Add dates if provided, format with Z time
-  if (startDateTime) {
+  if (startDateTime && startDateTime !== "null") {
     const formattedStart = `${startDateTime}T00:00:00Z`;
     url += `&startDateTime=${formattedStart}`;
   }
-  if (endDateTime) {
-    const formattedEnd = `${endDateTime}T00:00:00Z`;
+  if (endDateTime && endDateTime !== "null") {
+    const formattedEnd = `${endDateTime}T23:59:59Z`;
     url += `&endDateTime=${formattedEnd}`;
   }
+
+  console.log(url);
 
   try {
     const response = await axios.get(url);
