@@ -1,11 +1,10 @@
 const axios = require("axios");
 
 const apiKey = process.env.TICKETMASTER_API_KEY;
-// const apiKey2 = "Gop2hzx6q7EoGa1BTzateRWmIJqGxeUz";
-console.log({ apiKey });
 
 exports.searchEvents = async (req, res) => {
-  const { city, stateCode, startDateTime, endDateTime } = req.params;
+  const { city, stateCode } = req.params;
+  const { startDateTime, endDateTime } = req.query;
 
   // Validation: Only check for required fields
   if (!city || !stateCode) {
