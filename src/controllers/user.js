@@ -12,10 +12,12 @@ const register = async (req, res) => {
             token,
         });
     } catch (error) {
+        console.error("Registration Error:", error);
         if (error.code === 11000) {
             res.status(StatusCodes.BAD_REQUEST).json({ msg: 'Email already exist' });
+        } else if (error.name === "ValidationError") {
+            res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message })
         } else {
-            console.error("Registration Error:", error);
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ msg: 'Registration failed' });
         }
     }

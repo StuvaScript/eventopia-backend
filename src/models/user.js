@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -35,10 +36,21 @@ const UserSchema = new mongoose.Schema({
             message: 'Password must include at least one uppercase letter, one lowercase letter, and one number',
         }
     },
-    zipCode: {
+    city: {
         type: String,
-        required: [true, 'Please provide zip code'],
-        match: [/^\d{5}(-\d{4})?$/, 'Please provide a valid zip code'],
+        required: [true, "Please provide city"],
+    },
+    state: {
+        type: String,
+        required: [true, 'Please provide state'],
+        maxlength: 2,
+        enum: [
+            'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 
+            'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 
+            'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 
+            'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 
+            'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
+        ],
     }
 }, { timestamps: true });
 
@@ -53,9 +65,13 @@ UserSchema.pre('save', async function(next) {
 
 UserSchema.methods.createJWT = function () {
     return jwt.sign(
-        { userID: this._id, firstName: this.firstName, lastName: this.lastName },
+        { 
+            userId: this._id, 
+            firstName: this.firstName, 
+            lastName: this.lastName 
+        },
         process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_LIFETIME }
+        { expiresIn: '1d' }
     );
 };
 
