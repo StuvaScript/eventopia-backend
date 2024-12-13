@@ -5,7 +5,6 @@ const { NotFoundError } = require('../errors/not_found');
 
 const getAllItineraryItems = async (req, res) => {
     const itineraryItems = await ItineraryItem.find({ createdBy: req.user.userId }).sort('createdAt');
-    console.log('Fetched Itinerary Items:', itineraryItems);
     res.status(StatusCodes.OK).json({ itineraryItems, count: itineraryItems.length });
 }
 
