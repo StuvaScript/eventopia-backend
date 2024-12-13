@@ -35,10 +35,20 @@ const UserSchema = new mongoose.Schema({
             message: 'Password must include at least one uppercase letter, one lowercase letter, and one number',
         }
     },
-    zipCode: {
+    city: {
         type: String,
-        required: [true, 'Please provide zip code'],
-        match: [/^\d{5}(-\d{4})?$/, 'Please provide a valid zip code'],
+        require: [true, 'Please provide city'],
+    },
+    state: {
+        type: String,
+        require: [true, 'Please provide state'],
+        maxlengh: 2,
+        validate: {
+            validator: function(value) {
+                return /^[A-Z]{2}$/.test(value);
+            },
+            message: 'State must be a valid 2-letter abbreviation'
+        }
     }
 }, { timestamps: true });
 

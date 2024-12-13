@@ -1,3 +1,4 @@
+// Refactored and tested itineraryItem routes
 const ItineraryItem = require('../models/itineraryItem');
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError } = require('../errors/bad_request');
