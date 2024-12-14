@@ -40,9 +40,9 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    {
     "firstName": "Amanda",
     "lastName": "Hockmuth",
-    "email": "amandahockmuth@gmail.com",
+    "email": "example@gmail.com",
     "password": "Password129",
-    "city": "NY",
+    "city": "New York",
     "state": "NY"
     }
    ```
@@ -66,13 +66,13 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    * JSON Request Body:
 ```
 {
-  "name": "Node",
+  "name": "Event name",
   "date": "2024-12-29",
   "location": {
     "address": "6780 main St",
-    "city": "NY",
+    "city": "New York",
     "state": "NY",
-    "postalCode": "11364",
+    "postalCode": "11100",
     "coordinates": {
       "lat": 5,
       "lng": 5
