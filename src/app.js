@@ -1,3 +1,5 @@
+require("dotenv").config(); // Make sure this is at the top
+
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -25,6 +27,7 @@ const apiLimiter = rateLimit({
   max: 200, // Limit each IP to 200 requests per windowMs
 });
 
+//Routes
 app.use("/api", apiLimiter);
 app.use("/api/v1", mainRouter);
 app.use("/api/v1/ticketmaster", ticketmasterRouter);

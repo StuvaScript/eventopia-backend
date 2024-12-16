@@ -6,7 +6,8 @@ dotenv.config();
 const apiKey = process.env.TICKETMASTER_API_KEY;
 
 exports.searchEvents = async (req, res) => {
-  const { city, stateCode, startDateTime, endDateTime } = req.params;
+  const { city, stateCode } = req.params;
+  const { startDateTime, endDateTime } = req.query;
 
   // Validation: Only check for required fields
   if (!city || !stateCode) {
@@ -31,10 +32,11 @@ exports.searchEvents = async (req, res) => {
   console.log(url);
 
   try {
+    console.log(url);
     const response = await axios.get(url);
     res.json(response.data);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error fetching events" });
+    res.status(500).json({ error: "Error fetching events" + url });
   }
 };
