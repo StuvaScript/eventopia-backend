@@ -85,6 +85,25 @@ Note: In the below example, the group's front-end repository was named `bb-pract
 4. Update Itinerary
    * Method: PATCH
    * URL: http://localhost:8000/api/v1/itinerary/:<id>
+   * JSON Request Body:
+   ```
+{
+  "name": "updated event name",
+  "date": "updated date",
+  "location": {
+    "address": "updated address",
+    "city": "updated city",
+    "state": "updated state",
+    "postalCode": "updated postalCode",
+    "coordinates": {
+      "lat": 5,
+      "lng": 5
+    }
+  },
+  "user": "675bb5d8277e1a64f2033539"
+}
+
+```
 6. Delete Itinerary
    * Method: DELETE
    * URL: http://localhost:8000/api/v1/itinerary/:<id>
