@@ -55,9 +55,9 @@ This is the back-end API server for the front-end React app. It provides endpoin
    - GET `/`
    - Returns a simple test message
 
-2. **Ticketmaster Events**
+2. **Events Search**
 
-   - GET `/api/events/:city/:stateCode/:startDateTime?/:endDateTime?`
+   - GET `ticketmaster/events/:city/:stateCode/:dateRangeStart?/:dateRangeEnd?`
    - Parameters:
      - `city` (required): Name of the city
      - `stateCode` (required): Two-letter state code
@@ -66,9 +66,12 @@ This is the back-end API server for the front-end React app. It provides endpoin
 
    Example requests:
 
-   - `/api/events/Seattle/WA/2024-02-01/2024-02-05`
-   - `/api/events/Seattle/WA`
-   - `/api/events/Seattle/WA//2024-02-01`
+   - `http://localhost:8000/api/v1/ticketmaster/events/Seattle/WA/2024-02-01/2024-02-05`
+   - `http://localhost:8000/api/v1/ticketmaster/events/Seattle/WA`
+   - `http://localhost:8000/api/v1/ticketmaster/events/Seattle/WA//2024-02-01`
+
+   Example Data Response Format:
+
 
 ## Setup Instructions
 
