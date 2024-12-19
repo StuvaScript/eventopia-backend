@@ -71,6 +71,30 @@ This is the back-end API server for the front-end React app. It provides endpoin
    - `http://localhost:8000/api/v1/ticketmaster/events/Seattle/WA//2024-02-01`
 
    Example Data Response Format:
+   ``json array of event objects``
+      {
+         name: "Seattle Seahawks v Minnesota Vikings",
+         dates: {
+            startDate: "2024-12-22",
+            startTime: "13:05:00"
+         },
+         ticketmasterId: "vvG1HZbFH8sU0m",
+         url: "https://www.ticketmaster.com/seattle-seahawks-v-minnesota-vikings-seattle-washington-12-22-2024/event/0F00608F10C7692E",
+         info: "Flex Schedule: Please be aware that there are certain games that are subject to flexible scheduling and the date and time of those games may be changed from what is currently reflected on the schedule and what may appear on the ticket. For more detailed information about NFL flexible scheduling procedures for the 2024 NFL Season, please visit https://www.nfl.com/schedules/flexible-scheduling-procedures. Value tickets are not eligible for resale. Resale activity may result in ticket cancellation without notice.",
+         images: [
+            "https://s1.ticketm.net/dam/a/2db/0bae3d29-946e-44fd-aebd-2618ce30b2db_RECOMENDATION_16_9.jpg",
+            "https://s1.ticketm.net/dam/a/2db/0bae3d29-946e-44fd-aebd-2618ce30b2db_TABLET_LANDSCAPE_LARGE_16_9.jpg"
+            ],
+         venue: {
+            name: "Lumen Field",
+            address: "800 Occidental Ave S",
+            city: "Seattle",
+            state: "Washington",
+            lat: "47.595083",
+            lon: "-122.331607"
+            },
+         classification: "Sports"
+      }
 
 
 ## Setup Instructions
