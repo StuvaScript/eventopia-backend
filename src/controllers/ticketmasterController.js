@@ -29,10 +29,8 @@ exports.searchEvents = async (req, res) => {
     url += `&endDateTime=${formattedEnd}`;
   }
 
-  console.log(url);
-
   try {
-    console.log(url);
+    console.log(`Trying URL: ${url}`);
     const response = await axios.get(url);
     res.json(response.data);
   } catch (error) {
