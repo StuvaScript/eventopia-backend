@@ -20,11 +20,11 @@ exports.searchEvents = async (req, res) => {
   let url = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${apiKey}&city=${city}&stateCode=${stateCode}`;
 
   // Add dates if provided, format with Z time
-  if (dateRangeStart && dateRangeStart !== "null") {
+  if (dateRangeStart) {
     const formattedStart = `${dateRangeStart}T00:00:00Z`;
     url += `&startDateTime=${formattedStart}`;
   }
-  if (dateRangeEnd && dateRangeEnd !== "null") {
+  if (dateRangeEnd) {
     const formattedEnd = `${dateRangeEnd}T23:59:59Z`;
     url += `&endDateTime=${formattedEnd}`;
   }
