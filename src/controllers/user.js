@@ -32,7 +32,7 @@ const login = async (req, res, next) => {
         // find user by email
         const user = await User.findOne({ email });
         if (!user) {
-            throw new UnauthenticatedError('Invalid credentials');
+            throw new UnauthenticatedError('Can not find this email');
         }
 
         // compare passwords 
