@@ -8,12 +8,14 @@ const logger = require("morgan");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
+const cookieParser = require("cookie-parser");
 
 const mainRouter = require("./routes/mainRouter.js");
 const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
 
 // Middleware
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(logger("dev"));
