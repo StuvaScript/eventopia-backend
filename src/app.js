@@ -25,6 +25,7 @@ app.use(mongoSanitize());
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200, // Limit each IP to 200 requests per windowMs
+  trustProxy: process.env.NODE_ENV === "development",
 });
 
 //Routes
