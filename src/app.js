@@ -9,9 +9,23 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const cookieParser = require("cookie-parser");
+const { doubleCsrf } = require("csrf-csrf");
 
 const mainRouter = require("./routes/mainRouter.js");
 const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
+
+// Initialize CSRF protection
+const { generateToken, doubleCsrfProtection } = doubleCsrf({
+  getSecret: () => "your-secret-key-min-32-chars-long",
+  cookieName: "x-csrf-token",
+  cookieOptions: {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  },
+  size: 64,
+  getTokenFromRequest: (req) => req.headers["x-csrf-token"],
+});
 
 // Middleware
 app.use(cors());
@@ -29,9 +43,15 @@ const apiLimiter = rateLimit({
   max: 200, // Limit each IP to 200 requests per windowMs
 });
 
+// Generate CSRF token and attach to response
+app.use((req, res, next) => {
+  res.cookie("x-csrf-token", generateToken(req, res));
+  next();
+});
+
 //Routes
 app.use("/api", apiLimiter);
-app.use("/api/v1", mainRouter);
-app.use("/api/v1/ticketmaster", ticketmasterRouter);
+app.use("/api/v1", doubleCsrfProtection, mainRouter);
+app.use("/api/ticketmaster", ticketmasterRouter);
 
 module.exports = app;
