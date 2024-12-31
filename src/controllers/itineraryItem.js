@@ -15,17 +15,20 @@ const getAllItineraryItems = async (req, res) => {
 
 const getSingleItineraryItem = async (req, res) => {
   const { id } = req.params;
-  const { userId } = req.user.userId;
+  console.log(`req.user`, req.user);
+  const { userId } = req.user; // <-- changed this from 'req.user.userId'
 
   console.log("User:", userId);
   console.log("Itinerary Id:", id);
 
   const itineraryItem = await ItineraryItem.findOne({
     _id: id,
-    createdBy: userId,
+    user: userId, // <-- changed this from 'createdBy: userId'
   });
   if (!itineraryItem) {
-    throw new NotFoundError(`No itineraryItem with id ${id} for use ${userId}`);
+    throw new NotFoundError(
+      `No itineraryItem with id ${id} for user ${userId}`
+    );
   }
   res.status(StatusCodes.OK).json({ itineraryItem });
 };

@@ -8,7 +8,7 @@ const register = async (req, res) => {
     const user = await User.create({ ...req.body });
     const token = user.createJWT();
     res.status(StatusCodes.CREATED).json({
-      user: { name: `${user.firstName} ${user.lastName}` },
+      user: { id: user._id, name: `${user.firstName} ${user.lastName}` }, // <-- added "id: user._id,"
       token,
     });
   } catch (error) {
@@ -46,7 +46,7 @@ const login = async (req, res, next) => {
     // generate JWT token and response
     const token = user.createJWT();
     res.status(StatusCodes.OK).json({
-      user: { name: `${user.firstName} ${user.lastName}` },
+      user: { id: user._id, name: `${user.firstName} ${user.lastName}` }, // <-- added "id: user._id,"
       token,
     });
   } catch (error) {
