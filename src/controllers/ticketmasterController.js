@@ -30,7 +30,7 @@ exports.searchEvents = async (req, res) => {
   }
 
   try {
-    console.log(url);
+    console.log(`Trying URL: ${url}`);
     const response = await axios.get(url);
 
     // Check for presence of events in response data
