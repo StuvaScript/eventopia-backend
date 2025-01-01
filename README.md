@@ -1,16 +1,17 @@
+
 # Back-End Repo for Node/React Practicum
 
 This will be the API for the front-end React app part of your practicum project.
 
-These instructions are for the **front-end team** so they can setup their local development environment to run
-both the back-end server and their front-end app. You can go through these steps during your first group meeting
+These instructions are for the **front-end team** so they can setup their local development environment to run 
+both the back-end server and their front-end app. You can go through these steps during your first group meeting 
 in case you need assistance from your mentors.
 
-> The back-end server will be running on port 8000. The front-end app will be running on port 3000. You will need to run both the back-end server and the front-end app at the same time to test your app.
+>The back-end server will be running on port 8000. The front-end app will be running on port 3000. You will need to run both the back-end server and the front-end app at the same time to test your app.
 
 ### Setting up local development environment
 
-1. Create a folder to contain both the front-end and back-end repos
+1. Create a folder to contain both the front-end and back-end repos 
 2. Clone this repository to that folder
 3. Run `npm install` to install dependencies
 4. Pull the latest version of the `main` branch (when needed)
@@ -27,33 +28,86 @@ Note: In the below example, the group's front-end repository was named `bb-pract
 
 ![browser server](images/back-end-running-browser.png)
 
-> Update the .node-version file to match the version of Node.js the **team** is using. This is used by Render.com to [deploy the app](https://render.com/docs/node-version).
+>Update the .node-version file to match the version of Node.js the **team** is using. This is used by Render.com to [deploy the app](https://render.com/docs/node-version).
 
--
--
--
--
--
--
--
--
+### API Endpoints Summary
 
-# Back-End Repo for Node/React Practicum
+#### User Routes
+1. Register
+   * Method: POST
+   * URL: http://localhost:8000/api/v1/user/register
+   * JSON Request Body:
+   ```
+   {
+    "firstName": "Amanda",
+    "lastName": "Hockmuth",
+    "email": "example@gmail.com",
+    "password": "Password129",
+    "city": "New York",
+    "state": "NY"
+    }
+   ```
+2. Login
+   * Method: POST
+   * URL: http://localhost:8000/api/v1/user/login
+   * Credentials:
+     * Username: Email(e.g., example@gmail.com)
+     * Password: Password(e.g., Password123)
 
-This is the back-end API server for the front-end React app. It provides endpoints for event data from Ticketmaster API, user data and authentication, as well as saved user interests and itineraries from our MongoDB database.
+#### Itinerary Routes:
+1. Get All Itinerary:
+   * Method: GET
+   * URL: http://localhost:8000/api/v1/itinerary/
+2. Get Single Itinerary
+   * Method: GET
+   * URL: http://localhost:8000/api/v1/itinerary/:<id>
+3. Create Itinerary
+   * Method: POST
+   * URL: http://localhost:8000/api/v1/itinerary/
+   * JSON Request Body:
+```
+{
+  "name": "Event name",
+  "date": "2024-12-29",
+  "location": {
+    "address": "6780 main St",
+    "city": "New York",
+    "state": "NY",
+    "postalCode": "11100",
+    "coordinates": {
+      "lat": 5,
+      "lng": 5
+    }
+  },
+  "user": "675bb5d8277e1a64f2033539"
+}
 
-## API Endpoints
+```
+4. Update Itinerary
+   * Method: PATCH
+   * URL: http://localhost:8000/api/v1/itinerary/:<id>
+   * JSON Request Body:
+   ```
+{
+  "name": "updated event name",
+  "date": "updated date",
+  "location": {
+    "address": "updated address",
+    "city": "updated city",
+    "state": "updated state",
+    "postalCode": "updated postalCode",
+    "coordinates": {
+      "lat": 5,
+      "lng": 5
+    }
+  },
+  "user": "675bb5d8277e1a64f2033539"
+}
 
-### Base URL
-
-`http://localhost:8000/api/v1`
-
-### Endpoints
-
-1. **Main endpoint**
-
-   - GET `/`
-   - Returns a simple test message
+```
+6. Delete Itinerary
+   * Method: DELETE
+   * URL: http://localhost:8000/api/v1/itinerary/:<id>
 
 2. **Events Search**
 
@@ -95,11 +149,11 @@ This is the back-end API server for the front-end React app. It provides endpoin
             },
          classification: "Sports"
       }
-
-
+  
 ## Setup Instructions
 
 1. Create a folder to contain both the front-end and back-end repos
 2. Clone this repository to that folder
 3. Run `npm install` to install dependencies
 4. Create a `.env` file and add your Ticketmaster API key:
+

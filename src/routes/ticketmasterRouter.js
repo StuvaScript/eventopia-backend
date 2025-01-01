@@ -9,6 +9,7 @@ ticketmasterRouter.get(
   searchEvents
 );
 
+
 module.exports = ticketmasterRouter;
 
 //The API endpoint will work with formats:
