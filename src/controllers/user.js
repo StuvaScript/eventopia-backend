@@ -24,13 +24,13 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res, next) => {
+
   try {
     const { email, password } = req.body;
     // check if email and password are provided
     if (!email || !password) {
       throw new BadRequestError("Please provide email and password");
     }
-
     // find user by email
     const user = await User.findOne({ email });
     if (!user) {
