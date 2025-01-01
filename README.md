@@ -108,3 +108,10 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    * Method: DELETE
    * URL: http://localhost:8000/api/v1/itinerary/:<id>
 
+## Setup Instructions
+
+1. Create a folder to contain both the front-end and back-end repos
+2. Clone this repository to that folder
+3. Run `npm install` to install dependencies
+4. Create a `.env` file and add your Ticketmaster API key:
+
