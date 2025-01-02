@@ -6,9 +6,9 @@ const ticketmasterRouter = express.Router();
 // Route definition with optional parameters marked with ?
 ticketmasterRouter.get(
   "/events/:city/:stateCode/:dateRangeStart?/:dateRangeEnd?",
+  //"/events/:city/:stateCode",                      possible fix to search error
   searchEvents
 );
-
 
 module.exports = ticketmasterRouter;
 
