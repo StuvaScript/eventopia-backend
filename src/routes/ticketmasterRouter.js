@@ -4,7 +4,10 @@ const { searchEvents } = require("../controllers/ticketmasterController");
 const ticketmasterRouter = express.Router();
 
 // Route definition with optional parameters marked with ?
-ticketmasterRouter.get("/events/:city/:stateCode", searchEvents);
+ticketmasterRouter.get(
+  "/events/:city/:stateCode/:dateRangeStart?/:dateRangeEnd?",
+  searchEvents
+);
 
 module.exports = ticketmasterRouter;
 

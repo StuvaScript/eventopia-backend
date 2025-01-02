@@ -1,17 +1,21 @@
-require("dotenv").config(); // Make sure this is at the top
-
+require("dotenv").config();
 const express = require("express");
 const app = express();
-const cors = require("cors");
-const favicon = require("express-favicon");
-const logger = require("morgan");
+
+const cors = require('cors')
+const favicon = require('express-favicon');
+const logger = require('morgan');
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 const cookieParser = require("cookie-parser");
 const { doubleCsrf } = require("csrf-csrf");
+const notFoundMiddleware = require('./middleware/not_found');
+const errorHandleMiddleware = require('./middleware/error_handler');
 
-const mainRouter = require("./routes/mainRouter.js");
+const mainRouter = require('./routes/mainRouter.js');
+const userRouter = require('./routes/user');
+const itineraryRouter = require('./routes/itineraryRouter');
 const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
 
 // Initialize CSRF protection
@@ -51,7 +55,14 @@ app.use((req, res, next) => {
 
 //Routes
 app.use("/api", apiLimiter);
-app.use("/api/v1", doubleCsrfProtection, mainRouter);
 app.use("/api/ticketmaster", ticketmasterRouter);
+app.use("/api/v1", doubleCsrfProtection, mainRouter);
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/itinerary', itineraryRouter);
+
+// error handling middleware
+app.use(notFoundMiddleware);
+app.use(errorHandleMiddleware);
+
 
 module.exports = app;
