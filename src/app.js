@@ -1,23 +1,20 @@
-require("dotenv").config(); // Make sure this is at the top
-
+require("dotenv").config();
 const express = require("express");
 const app = express();
 
-const cors = require('cors')
-const favicon = require('express-favicon');
-const logger = require('morgan');
+const cors = require("cors");
+const favicon = require("express-favicon");
+const logger = require("morgan");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
-const notFoundMiddleware = require('./middleware/not_found');
-const errorHandleMiddleware = require('./middleware/error_handler');
+const notFoundMiddleware = require("./middleware/not_found");
+const errorHandleMiddleware = require("./middleware/error_handler");
 
-
-const mainRouter = require('./routes/mainRouter.js');
-const userRouter = require('./routes/user');
-const itineraryRouter = require('./routes/itineraryRouter');
+const mainRouter = require("./routes/mainRouter.js");
+const userRouter = require("./routes/user");
+const itineraryRouter = require("./routes/itineraryRouter");
 const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
-
 
 // Middleware
 app.use(cors());
@@ -35,18 +32,15 @@ const apiLimiter = rateLimit({
   trustProxy: process.env.NODE_ENV === "development",
 });
 
-
-
 // routes
 app.use("/api", apiLimiter);
-app.use('/api/v1', mainRouter);
-app.use('/api/v1/user', userRouter);
-app.use('/api/v1/itinerary', itineraryRouter);
-app.use("/api/v1/ticketmaster", ticketmasterRouter);
+app.use("/api/ticketmaster", ticketmasterRouter);
+app.use("/api/v1", mainRouter);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/itinerary", itineraryRouter);
 
 // error handling middleware
 app.use(notFoundMiddleware);
 app.use(errorHandleMiddleware);
-
 
 module.exports = app;
