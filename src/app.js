@@ -26,6 +26,7 @@ app.use(favicon(__dirname + "/public/favicon.ico"));
 app.use(helmet());
 app.use(mongoSanitize());
 
+app.set("trust proxy", 1);
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200, // Limit each IP to 200 requests per windowMs
