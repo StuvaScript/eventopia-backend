@@ -9,6 +9,6 @@ ticketmasterRouter.get("/events/:city/:stateCode", searchEvents);
 module.exports = ticketmasterRouter;
 
 //The API endpoint will work with formats:
-//   /api/v1/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01&dateRangeEnd=2025-02-05
-//   /api/v1/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01
-//   /api/v1/ticketmaster/events/Seattle/WA
+//   /api/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01&dateRangeEnd=2025-02-05
+//   /api/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01
+//   /api/ticketmaster/events/Seattle/WA
