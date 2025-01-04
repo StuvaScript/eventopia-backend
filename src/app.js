@@ -11,7 +11,6 @@ const mongoSanitize = require("express-mongo-sanitize");
 const notFoundMiddleware = require("./middleware/not_found");
 const errorHandleMiddleware = require("./middleware/error_handler");
 
-const mainRouter = require("./routes/mainRouter.js");
 const userRouter = require("./routes/user");
 const itineraryRouter = require("./routes/itineraryRouter");
 const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
@@ -36,7 +35,6 @@ const apiLimiter = rateLimit({
 // routes
 app.use("/api", apiLimiter);
 app.use("/api/ticketmaster", ticketmasterRouter);
-app.use("/api/v1", mainRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/itinerary", itineraryRouter);
 
