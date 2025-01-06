@@ -58,9 +58,7 @@ exports.searchEvents = async (req, res) => {
           lat: event._embedded.venues[0].location?.latitude,
           lon: event._embedded.venues[0].location?.longitude,
         },
-        classification: event.classifications[0]?.primary
-          ? event.classifications[0].segment.name
-          : "",
+        classification: event.classifications?.[0]?.segment?.name || "",
       }));
       res.json(formattedEvents);
     }
