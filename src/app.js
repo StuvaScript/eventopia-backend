@@ -14,6 +14,7 @@ const errorHandleMiddleware = require("./middleware/error_handler");
 const userRouter = require("./routes/user");
 const itineraryRouter = require("./routes/itineraryRouter");
 const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
+const nodemailerRouter = require("./routes/nodemailerRouter");
 
 // Middleware
 app.use(cors());
@@ -34,6 +35,7 @@ const apiLimiter = rateLimit({
 
 // routes
 app.use("/api", apiLimiter);
+app.use("/api/email", nodemailerRouter);
 app.use("/api/ticketmaster", ticketmasterRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/itinerary", itineraryRouter);
