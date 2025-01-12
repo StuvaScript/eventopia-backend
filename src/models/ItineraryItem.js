@@ -3,6 +3,17 @@ const mongoose = require("mongoose");
 
 const ItineraryItemSchema = new mongoose.Schema(
   {
+    ticketmasterId: {
+      type: String,
+      required: [
+        true,
+        "Error: no ticketmaster id provided for itinerary item.",
+      ],
+      unique: [
+        true,
+        "Error: duplicate ticketmaster id provided for itinerary item.",
+      ],
+    },
     name: {
       type: String,
       required: [true, "Error: no name provided for itinerary item."],
@@ -43,7 +54,7 @@ const ItineraryItemSchema = new mongoose.Schema(
     user: {
       type: mongoose.Types.ObjectId,
       ref: "User",
-      required: [true, "Please provide user."],
+      required: [true, "Error: no user provided for itinerary item."],
     },
   },
   { timestamps: true }
