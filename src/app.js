@@ -45,6 +45,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(mongoSanitize());
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
+app.use(express.json());
 
 // CSRF Token Route
 app.get('/api/v1/csrf-token', (req, res) => {
