@@ -20,7 +20,7 @@ const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
 
 // CSRF protection
 const { generateToken, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => process.env.JWT_SECRET,
+  getSecret: () => process.env.JWT_SECRET_CSRF,
   cookieName: "x-csrf-token",
   cookieOptions: {
     httpOnly: true,
@@ -30,6 +30,7 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
   size: 64,
   getTokenFromRequest: (req) => req.headers["x-csrf-token"],
 });
+
 
 // CORS
 app.use(cors({
@@ -51,12 +52,12 @@ app.use(express.json());
 app.get('/api/v1/csrf-token', (req, res) => {
   const token = generateToken(req, res);
   res.cookie("x-csrf-token", token, {
-    httpOnly: true,
-    sameSite: "strict",
+    httpOnly: false,
+    sameSite: "None",
     secure: process.env.NODE_ENV === "production",
   });
   res.json({ csrfToken: token });
-})
+});
 
 
 // Rate Limiter
@@ -70,7 +71,7 @@ app.use("/api/v1", apiLimiter);
 // Routes
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/itinerary', doubleCsrfProtection, itineraryRouter);
-app.use("/api/v1/ticketmaster", doubleCsrfProtection, ticketmasterRouter);
+app.use("/api/v1/ticketmaster", ticketmasterRouter);
 
 // Error Handling Middleware
 app.use(notFoundMiddleware);
