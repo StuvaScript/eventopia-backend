@@ -17,17 +17,18 @@ const shareEvent = async (req, res) => {
   const shareEventEmail = {
     from: `HHTeamOne@gmail.com`,
     to: recipientEmail,
-    subject: `Check Out This Event from ${userName}`,
+    subject: `${userName} Shared an Event with You`,
     html: `
           <h1>Hey there!</h1>
-          <p>${userName} wanted to share this event with you:</p>
+          <p>${userName} thinks you might be interested in this event:</p>
           <h2>${eventDetails.name}</h2>
           <p>Date: ${eventDetails.date}</p>
           <p>Location: ${eventDetails.location.address}, ${
       eventDetails.location.city
     }, ${eventDetails.location.state}</p>
           <p>Details: ${eventDetails.info || ""}</p>
-        `,
+          <p>Want to find events of your own? Check us out <a href="https://hh-team1-front.onrender.com/">here</a>.</p>
+          `,
   };
 
   try {
