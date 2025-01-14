@@ -7,7 +7,7 @@ const apiKey = process.env.TICKETMASTER_API_KEY;
 
 exports.searchEvents = async (req, res) => {
   const { city, stateCode } = req.params;
-  const { dateRangeStart, dateRangeEnd } = req.query;
+  const { dateRangeStart, dateRangeEnd, keyword } = req.query;
 
   // Validation: Only check for required fields
   if (!city || !stateCode) {
@@ -27,6 +27,9 @@ exports.searchEvents = async (req, res) => {
   if (dateRangeEnd) {
     const formattedEnd = `${dateRangeEnd}T23:59:59Z`;
     url += `&endDateTime=${formattedEnd}`;
+  }
+  if (keyword) {
+    url += `&keyword=${keyword}`;
   }
 
   try {
@@ -58,7 +61,7 @@ exports.searchEvents = async (req, res) => {
           lat: event._embedded.venues[0].location?.latitude,
           lon: event._embedded.venues[0].location?.longitude,
         },
-        classification: event.classifications[0]?.primary
+        classification: event.classifications?.[0]?.primary
           ? event.classifications[0].segment.name
           : "",
       }));
