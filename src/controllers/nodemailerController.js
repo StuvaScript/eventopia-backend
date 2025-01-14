@@ -3,19 +3,24 @@ const nodemailer = require("nodemailer");
 const { StatusCodes } = require("http-status-codes");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com", // provider's SMTP server
-  port: 587,
-  secure: false,
+  host: `${process.env.SMTP_HOST}`,
+  port: process.env.SMTP_PORT,
+  secure: process.env.SMTP_PORT === "465",
   auth: {
-    user: `HHTeamOne@gmail.com`,
-    pass: process.env.EMAILPASSWORD,
+    user: process.env.SENDER_EMAIL,
+    pass: process.env.SENDER_EMAIL_PASSWORD,
   },
+  tls: {
+    rejectUnauthorized: false,
+  },
+  debug: true,
 });
+
 const shareEvent = async (req, res) => {
   const { recipientEmail, eventDetails, userName } = req.body;
 
   const shareEventEmail = {
-    from: `HHTeamOne@gmail.com`,
+    from: `"No Reply" <${process.env.SENDER_EMAIL}>`,
     to: recipientEmail,
     subject: `${userName} Shared an Event with You`,
     html: `
