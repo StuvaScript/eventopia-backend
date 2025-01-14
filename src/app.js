@@ -38,6 +38,7 @@ app.use(cors({
   credentials: true,
 }));
 
+
 // Middleware
 app.use(helmet());
 app.use(logger("dev"));
@@ -51,27 +52,27 @@ app.use(express.json());
 // CSRF Token Route
 app.get('/api/v1/csrf-token', (req, res) => {
   const token = generateToken(req, res);
-  res.cookie("x-csrf-token", token, {
-    httpOnly: false,
-    sameSite: "None",
-    secure: process.env.NODE_ENV === "production",
-  });
   res.json({ csrfToken: token });
 });
 
 
-// Rate Limiter
+app.set("trust proxy", 1);
+
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200, // Limit each IP to 200 requests per windowMs
+  trustProxy: process.env.NODE_ENV === "development",
 });
 app.use("/api/v1", apiLimiter);
+
 
 
 // Routes
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/itinerary', doubleCsrfProtection, itineraryRouter);
 app.use("/api/v1/ticketmaster", ticketmasterRouter);
+
+
 
 // Error Handling Middleware
 app.use(notFoundMiddleware);
@@ -80,4 +81,8 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ error: err.message || "Internal Server Error" });
 });
 
+app.use(errorHandleMiddleware);
+
+
 module.exports = app;
+
