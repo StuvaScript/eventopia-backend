@@ -20,7 +20,7 @@ const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
 
 // CSRF protection
 const { generateToken, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => process.env.JWT_SECRET,
+  getSecret: () => process.env.JWT_SECRET_CSRF,
   cookieName: "x-csrf-token",
   cookieOptions: {
     httpOnly: true,
@@ -47,12 +47,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(mongoSanitize());
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
+app.use(express.json());
 
 // CSRF Token Route
 app.get('/api/v1/csrf-token', (req, res) => {
   const token = generateToken(req, res);
   res.json({ csrfToken: token });
-})
+});
 
 
 app.set("trust proxy", 1);
@@ -65,10 +66,12 @@ const apiLimiter = rateLimit({
 app.use("/api/v1", apiLimiter);
 
 
-// routes
-app.use("/api/ticketmaster", ticketmasterRouter);
-app.use("/api/v1/user", userRouter);
-app.use("/api/v1/itinerary",doubleCsrfProtection, itineraryRouter);
+
+// Routes
+app.use('/api/v1/user', userRouter);
+app.use('/api/v1/itinerary', doubleCsrfProtection, itineraryRouter);
+app.use("/api/v1/ticketmaster", ticketmasterRouter);
+
 
 
 // Error Handling Middleware

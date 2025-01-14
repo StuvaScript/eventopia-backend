@@ -55,6 +55,8 @@ const UserSchema = new mongoose.Schema(
         message: "State must be a valid US state abbreviation",
       },
     },
+    passwordResetToken: String,
+    passwordResetExpires: Date,
   },
   { timestamps: true }
 );
