@@ -5,8 +5,9 @@ const { NotFoundError } = require("../errors/not_found");
 const { default: mongoose } = require("mongoose");
 
 const getAllItineraryItems = async (req, res) => {
+  console.log("Req.userId:", req.user);
   const itineraryItems = await ItineraryItem.find({
-    createdBy: req.userId,
+    createdBy: req.user,
   }).sort("createdAt");
   res
     .status(StatusCodes.OK)
