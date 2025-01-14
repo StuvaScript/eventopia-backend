@@ -65,7 +65,7 @@ app.use("/api/v1", apiLimiter);
 // Routes
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/itinerary', doubleCsrfProtection, itineraryRouter);
-app.use("/api/v1/ticketmaster", doubleCsrfProtection, ticketmasterRouter);
+app.use("/api/v1/ticketmaster", ticketmasterRouter);
 
 // Error Handling Middleware
 app.use(notFoundMiddleware);
