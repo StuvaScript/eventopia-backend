@@ -21,12 +21,10 @@ exports.searchEvents = async (req, res) => {
 
   // Add dates if provided, format with Z time
   if (dateRangeStart) {
-    const formattedStart = `${dateRangeStart}T00:00:00Z`;
-    url += `&startDateTime=${formattedStart}`;
+    url += `&startDateTime=${dateRangeStart}`;
   }
   if (dateRangeEnd) {
-    const formattedEnd = `${dateRangeEnd}T23:59:59Z`;
-    url += `&endDateTime=${formattedEnd}`;
+    url += `&endDateTime=${dateRangeEnd}`;
   }
 
   try {
