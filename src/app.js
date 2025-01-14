@@ -31,6 +31,7 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
   getTokenFromRequest: (req) => req.headers["x-csrf-token"],
 });
 
+
 // CORS
 app.use(cors({
   origin: "http://localhost:3000",
@@ -49,11 +50,6 @@ app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 // CSRF Token Route
 app.get('/api/v1/csrf-token', (req, res) => {
   const token = generateToken(req, res);
-  res.cookie("x-csrf-token", token, {
-    httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
-  });
   res.json({ csrfToken: token });
 })
 
@@ -79,3 +75,4 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
+
