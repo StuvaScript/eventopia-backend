@@ -17,6 +17,7 @@ const errorHandleMiddleware = require('./middleware/error_handler');
 const userRouter = require('./routes/user');
 const itineraryRouter = require('./routes/itineraryRouter');
 const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
+const nodemailerRouter = require("./routes/nodemailerRouter");
 
 // CSRF protection
 const { generateToken, doubleCsrfProtection } = doubleCsrf({
@@ -31,13 +32,11 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
   getTokenFromRequest: (req) => req.headers["x-csrf-token"],
 });
 
-
 // CORS
 app.use(cors({
   origin: "http://localhost:3000",
   credentials: true,
 }));
-
 
 // Middleware
 app.use(helmet());
@@ -55,7 +54,6 @@ app.get('/api/v1/csrf-token', (req, res) => {
   res.json({ csrfToken: token });
 });
 
-
 app.set("trust proxy", 1);
 
 const apiLimiter = rateLimit({
@@ -63,16 +61,13 @@ const apiLimiter = rateLimit({
   max: 200, // Limit each IP to 200 requests per windowMs
   trustProxy: process.env.NODE_ENV === "development",
 });
-app.use("/api/v1", apiLimiter);
-
-
+app.use("/api", apiLimiter);
 
 // Routes
+app.use("/api/email", nodemailerRouter);
+app.use("/api/ticketmaster", ticketmasterRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/itinerary', doubleCsrfProtection, itineraryRouter);
-app.use("/api/v1/ticketmaster", ticketmasterRouter);
-
-
 
 // Error Handling Middleware
 app.use(notFoundMiddleware);
