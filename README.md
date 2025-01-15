@@ -126,8 +126,9 @@ Note: In the below example, the group's front-end repository was named `bb-pract
 - Example requests:
 
   - `https://hh-team1-back.onrender.com/api/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01&dateRangeEnd=2025-02-05`
+  - `https://hh-team1-back.onrender.com/api/ticketmaster/events/Seattle/WA?dateRangeStart=2024-02-01`
+  - `https://hh-team1-back.onrender.com/api/ticketmaster/events/Seattle/WA?keyword=sports`
   - `https://hh-team1-back.onrender.com/api/ticketmaster/events/Seattle/WA`
-  - `https://hh-team1-back.onrender.com/api/ticketmaster/events/Seattle/WA//2024-02-01`
 
 - Example JSON Response:
   ```
