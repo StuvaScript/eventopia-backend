@@ -7,7 +7,7 @@ const apiKey = process.env.TICKETMASTER_API_KEY;
 
 exports.searchEvents = async (req, res) => {
   const { city, stateCode } = req.params;
-  const { dateRangeStart, dateRangeEnd } = req.query;
+  const { dateRangeStart, dateRangeEnd, keyword } = req.query;
 
   // Validation: Only check for required fields
   if (!city || !stateCode) {
@@ -21,16 +21,17 @@ exports.searchEvents = async (req, res) => {
 
   // Add dates if provided, format with Z time
   if (dateRangeStart) {
-    const formattedStart = `${dateRangeStart}T00:00:00Z`;
-    url += `&startDateTime=${formattedStart}`;
+    url += `&startDateTime=${dateRangeStart}`;
   }
   if (dateRangeEnd) {
-    const formattedEnd = `${dateRangeEnd}T23:59:59Z`;
-    url += `&endDateTime=${formattedEnd}`;
+    url += `&endDateTime=${dateRangeEnd}`;
+  }
+  if (keyword) {
+    url += `&keyword=${keyword}`;
   }
 
   try {
-    // console.log(`Trying URL: ${url}`);
+    console.log(`Trying URL: ${url}`);
     const response = await axios.get(url);
 
     // Check for presence of events in response data
