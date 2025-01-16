@@ -171,4 +171,4 @@ module.exports = {
   login,
   requestPasswordReset,
   resetPassword,
-};
+

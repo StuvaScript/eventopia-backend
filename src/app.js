@@ -17,10 +17,11 @@ const errorHandleMiddleware = require('./middleware/error_handler');
 const userRouter = require('./routes/user');
 const itineraryRouter = require('./routes/itineraryRouter');
 const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
+const nodemailerRouter = require("./routes/nodemailerRouter");
 
 // CSRF protection
 const { generateToken, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => process.env.JWT_SECRET,
+  getSecret: () => process.env.JWT_SECRET_CSRF,
   cookieName: "x-csrf-token",
   cookieOptions: {
     httpOnly: true,
@@ -30,7 +31,6 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
   size: 64,
   getTokenFromRequest: (req) => req.headers["x-csrf-token"],
 });
-
 
 // CORS
 app.use(cors({
@@ -46,26 +46,29 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(mongoSanitize());
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
+app.use(express.json());
 
 // CSRF Token Route
 app.get('/api/v1/csrf-token', (req, res) => {
   const token = generateToken(req, res);
   res.json({ csrfToken: token });
-})
+});
 
+app.set("trust proxy", 1);
 
-// Rate Limiter
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200, // Limit each IP to 200 requests per windowMs
+  trustProxy: process.env.NODE_ENV === "development",
 });
-app.use("/api/v1", apiLimiter);
-
+app.use("/api", apiLimiter);
 
 // Routes
+app.use("/api/email", nodemailerRouter);
+app.use("/api/ticketmaster", ticketmasterRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/itinerary', doubleCsrfProtection, itineraryRouter);
-app.use("/api/v1/ticketmaster", ticketmasterRouter);
+
 
 // Error Handling Middleware
 app.use(notFoundMiddleware);
@@ -73,6 +76,9 @@ app.use((err, req, res, next) => {
   console.error("Error stack:", err.stack);
   res.status(err.status || 500).json({ error: err.message || "Internal Server Error" });
 });
+
+app.use(errorHandleMiddleware);
+
 
 module.exports = app;
 

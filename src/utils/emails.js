@@ -43,6 +43,7 @@ transporter.verify((error) => {
     }
 });
 
+
 // test
 // (async () => {
 //     try {
@@ -56,4 +57,4 @@ transporter.verify((error) => {
 //     }
 // })();
 
-module.exports = { sendEmail };
+
