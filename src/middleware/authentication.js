@@ -3,15 +3,15 @@ const jwt = require("jsonwebtoken");
 const UnauthenticatedError = require("../errors/unauthenticated");
 
 const auth = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  console.log(authHeader);
+  const authHeader = req.cookies.token;
+  console.log("authHeader", authHeader);
 
-  if (!authHeader || !authHeader.startsWith("Bearer")) {
+  if (!authHeader) {
     throw new UnauthenticatedError("Authentication invalid");
   }
-  const token = authHeader.split(" ")[1];
+
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = jwt.verify(authHeader, process.env.JWT_SECRET);
     console.log("JWT Payload:", payload);
     req.user = {
       userId: payload.userId,
@@ -23,6 +23,6 @@ const auth = async (req, res, next) => {
     throw new UnauthenticatedError("Authentication invalid");
   }
 };
-// console.log('jwt secret', process.env.JWT_SECRET);
+
 
 module.exports = auth;

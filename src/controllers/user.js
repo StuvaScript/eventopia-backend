@@ -34,6 +34,8 @@ const login = async (req, res, next) => {
 
   console.log("login request body:", req.body);
   console.log("login request email:", req.body.email);
+  console.log("login request password:", req.body.password);
+  console.log("request:", req);
 
   try {
     const { email, password } = req.body;
@@ -42,9 +44,9 @@ const login = async (req, res, next) => {
       throw new BadRequestError("Please provide email and password");
     }
     // find user by email
-    const user = await User.findOne({ email });
-
+    const user = await User.findOne({ email: email.toLowerCase() });
     console.log("Found user:", user);
+
 
     if (!user) {
       throw new UnauthenticatedError("Invalid credentials");
@@ -60,6 +62,7 @@ const login = async (req, res, next) => {
     // generate JWT token and response
     const token = user.createJWT();
     console.log("Generated Jwt token:", token);
+    res.cookie("token", token);
     res.status(StatusCodes.OK).json({
       user: { id: user._id, name: `${user.firstName} ${user.lastName}` }, // <-- added "id: user._id,"
       token,

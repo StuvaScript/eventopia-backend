@@ -50,8 +50,10 @@ const UserSchema = new mongoose.Schema(
       maxlength: 2,
       validate: {
         validator: function (value) {
-          return /^[A-Za-z]{2}$/.test(value);
+          console.log(value);
+          return /^[A-Z]{2}$/.test(value);
         },
+        
         message: "State must be a valid US state abbreviation",
       },
     },
@@ -82,6 +84,7 @@ UserSchema.methods.comparePassword = async function (userPassword) {
   return await bcrypt.compare(userPassword, this.password);
 };
 
-// UserSchema.index({ email: 1 }, { unique: true });
+
+UserSchema.index({ email: 1 }, { unique: true });
 
 module.exports = mongoose.model("User", UserSchema);
