@@ -34,7 +34,7 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
 
 // CORS
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: "http://localhost:5173",
   credentials: true,
 }));
 
@@ -68,6 +68,7 @@ app.use("/api/email", nodemailerRouter);
 app.use("/api/ticketmaster", ticketmasterRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/itinerary', doubleCsrfProtection, itineraryRouter);
+
 
 // Error Handling Middleware
 app.use(notFoundMiddleware);

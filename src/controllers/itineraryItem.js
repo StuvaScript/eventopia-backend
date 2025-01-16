@@ -5,8 +5,9 @@ const { NotFoundError } = require("../errors/not_found");
 const { default: mongoose } = require("mongoose");
 
 const getAllItineraryItems = async (req, res) => {
+  console.log("Req.userId:", req.user);
   const itineraryItems = await ItineraryItem.find({
-    createdBy: req.userId,
+    user: req.user.userId,
   }).sort("createdAt");
   res
     .status(StatusCodes.OK)
@@ -23,7 +24,7 @@ const getSingleItineraryItem = async (req, res) => {
 
   const itineraryItem = await ItineraryItem.findOne({
     _id: id,
-    user: userId, // <-- changed this from 'createdBy: userId'
+    user: userId, 
   });
   if (!itineraryItem) {
     throw new NotFoundError(
@@ -45,7 +46,9 @@ const validateNestedFields = (requiredFields, data, prefix = "") => {
 };
 
 const createItineraryItem = async (req, res) => {
-  req.body.createdBy = req.user;
+  req.body.user = req.user.userId;
+  console.log("req.body.user", req.body.user)
+  console.log("user:", req.user);
 
   const locationRequiredFields = ["address", "city", "state", "postalCode"];
   const coordinatesRequiredFields = ["lat", "lng"];
@@ -71,6 +74,7 @@ const createItineraryItem = async (req, res) => {
   }
 
   const itineraryItem = await ItineraryItem.create(req.body);
+  console.log("created item:", itineraryItem);
   res.status(StatusCodes.CREATED).json({ itineraryItem });
 };
 
@@ -122,15 +126,19 @@ const updateItineraryItem = async (req, res) => {
 
 const deleteItineraryItem = async (req, res) => {
   const { id } = req.params;
+  const { userId } = req.user; 
+
+  console.log("id", id);
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new BadRequestError(`Invalid ID format: ${id}`);
   }
 
   const objectId = new mongoose.Types.ObjectId(id);
+  console.log("objectId:", objectId);
   const itineraryItem = await ItineraryItem.findOneAndDelete({
-    _id: objectId,
-    createdBy: req.userId,
+    _id: id,
+    user: userId,
   });
 
   if (!itineraryItem) {
