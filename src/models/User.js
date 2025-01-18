@@ -53,7 +53,6 @@ const UserSchema = new mongoose.Schema(
           console.log(value);
           return /^[A-Z]{2}$/.test(value);
         },
-        
         message: "State must be a valid US state abbreviation",
       },
     },

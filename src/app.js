@@ -17,6 +17,8 @@ const errorHandleMiddleware = require('./middleware/error_handler');
 const userRouter = require('./routes/user');
 const itineraryRouter = require('./routes/itineraryRouter');
 const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
+const nodemailerRouter = require("./routes/nodemailerRouter");
+
 
 // CSRF protection
 const { generateToken, doubleCsrfProtection } = doubleCsrf({
@@ -63,9 +65,11 @@ app.use("/api/v1", apiLimiter);
 
 
 // Routes
+app.use("/api/mail", nodemailerRouter);
+app.use("/api/v1/ticketmaster", ticketmasterRouter);
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/itinerary', doubleCsrfProtection, itineraryRouter);
-app.use("/api/v1/ticketmaster", ticketmasterRouter);
+
 
 // Error Handling Middleware
 app.use(notFoundMiddleware);

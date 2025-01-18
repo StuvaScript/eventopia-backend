@@ -64,7 +64,7 @@ const login = async (req, res, next) => {
     console.log("Generated Jwt token:", token);
     res.cookie("token", token);
     res.status(StatusCodes.OK).json({
-      user: { id: user._id, name: `${user.firstName} ${user.lastName}` }, // <-- added "id: user._id,"
+      user: { id: user._id, name: `${user.firstName} ${user.lastName}`, city: user.city, state: user.state }, // <-- added "id: user._id,"
       token,
     });
   } catch (error) {
@@ -108,7 +108,8 @@ const requestPasswordReset = async (req, res) => {
   console.log("User document after save:", user);
 
   // send email with reset token 
-  const resetUrl = `http://localhost:8000/api/v1/user/reset-password/${resetToken}`;
+  const resetUrl = 'http://localhost:5173/resetpassword/';
+  // const resetUrl = `http://localhost:8000/api/v1/user/reset-password/${resetToken}`;
   const message = `Click the following link to reset your password: ${resetUrl}`;
 
   try {
