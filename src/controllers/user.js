@@ -62,7 +62,12 @@ const login = async (req, res, next) => {
     // generate JWT token and response
     const token = user.createJWT();
     console.log("Generated Jwt token:", token);
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      maxAge: parseInt(expiresIn) * 1000,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict"
+    });
     res.status(StatusCodes.OK).json({
       user: { id: user._id, name: `${user.firstName} ${user.lastName}`, city: user.city, state: user.state }, // <-- added "id: user._id,"
       token,
