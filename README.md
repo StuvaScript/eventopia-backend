@@ -37,8 +37,8 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    - Method: POST
    - URL: http://localhost:8000/api/v1/user/register
    - JSON Request Body:
-
-   ```
+   
+   ```json
    {
     "firstName": "Amanda",
     "lastName": "Hockmuth",
@@ -53,8 +53,8 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    - Method: POST
    - URL: http://localhost:8000/api/v1/user/login
    - JSON Request Body:
-
-   ```
+   
+   ```json
    {
    "email": "example@gmail.com",
    "password": "Password129"
@@ -77,8 +77,8 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    - URL: http://localhost:8000/api/v1/itinerary/
    - Requires: Authentication token
    - JSON Request Body:
-
-   ```
+   
+   ```json
    {
    "ticketmasterId": "vvG1HZbFH8sU0m",
    "name": "Event Name",
@@ -107,8 +107,8 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
    - Requires: Authentication token
    - JSON Request Body:
-
-   ```
+   
+   ```json
    {
    "ticketmasterId": "vvG1HZbFH8sU0m",
    "name": "Event Name",
@@ -136,7 +136,7 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
    - Requires: Authentication token
 
-#### Events Search Routes
+#### Events Search Route
 
 - Method: GET
 - URL: http://localhost:8000/api/ticketmaster/events/:city/:stateCode
@@ -154,8 +154,8 @@ Note: In the below example, the group's front-end repository was named `bb-pract
   - `/api/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01T00:00:00Z&dateRangeEnd=2025-02-28T00:00:00Z&keyword=sports`
 
 - Example JSON Response:
-
-  ```
+   
+   ```json
   {
    name: "UFC Fight Night",
    dates: {
@@ -180,3 +180,25 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    classification: "Sports"
   },
   ```
+#### Event Sharing Route
+1. Share Event
+   - Method: POST
+   - URL: http://localhost:8000/api/email/share-event
+   - JSON Request Body:
+
+   ```json
+   {
+     "recipientEmail": "friend@example.com",
+     "userName": "Jane Doe",
+     "eventDetails": {
+       "name": "Concert Event",
+       "startDateTime": "2024-12-22T13:05:00",
+       "venue": {
+         "name": "Concert Hall",
+         "address": "123 Music Ave",
+         "city": "Seattle",
+         "state": "Washington"
+       },
+       "info": "Amazing concert event description"
+     }
+   }
