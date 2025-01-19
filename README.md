@@ -34,30 +34,32 @@ Note: In the below example, the group's front-end repository was named `bb-pract
 #### User Routes
 
 1. Register
+
    - Method: POST
    - URL: http://localhost:8000/api/v1/user/register
    - JSON Request Body:
-   
+
    ```json
    {
-    "firstName": "Amanda",
-    "lastName": "Hockmuth",
-    "email": "example@gmail.com",
-    "password": "Password129",
-    "city": "New York",
-    "state": "NY"
-    }
+     "firstName": "Amanda",
+     "lastName": "Hockmuth",
+     "email": "example@gmail.com",
+     "password": "Password129",
+     "city": "New York",
+     "state": "NY"
+   }
    ```
 
 2. Login
+
    - Method: POST
    - URL: http://localhost:8000/api/v1/user/login
    - JSON Request Body:
-   
+
    ```json
    {
-   "email": "example@gmail.com",
-   "password": "Password129"
+     "email": "example@gmail.com",
+     "password": "Password129"
    }
    ```
 
@@ -77,27 +79,27 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    - URL: http://localhost:8000/api/v1/itinerary/
    - Requires: Authentication token
    - JSON Request Body:
-   
+
    ```json
    {
-   "ticketmasterId": "vvG1HZbFH8sU0m",
-   "name": "Event Name",
-   "startDateTime": "2024-12-22T13:05:00",
-   "venue": {
-    "name": "Venue Name",
-    "address": "800 Main St",
-    "city": "Seattle",
-    "state": "Washington",
-    "postalCode": "98101",
-    "coordinates": {
-      "lat": 47.595083,
-      "lng": -122.331607
-         }
-      },
-   "url": "https://www.ticketmaster.com/event/123",
-   "imageURL": "https://example.com/image.jpg",
-   "info": "Event description",
-   "user": "675bb5d8277e1a64f2033539"
+     "ticketmasterId": "vvG1HZbFH8sU0m",
+     "name": "Event Name",
+     "startDateTime": "2024-12-22T13:05:00",
+     "venue": {
+       "name": "Venue Name",
+       "address": "800 Main St",
+       "city": "Seattle",
+       "state": "Washington",
+       "postalCode": "98101",
+       "coordinates": {
+         "lat": 47.595083,
+         "lng": -122.331607
+       }
+     },
+     "url": "https://www.ticketmaster.com/event/123",
+     "imageURL": "https://example.com/image.jpg",
+     "info": "Event description",
+     "user": "675bb5d8277e1a64f2033539"
    }
    ```
 
@@ -107,27 +109,27 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
    - Requires: Authentication token
    - JSON Request Body:
-   
+
    ```json
    {
-   "ticketmasterId": "vvG1HZbFH8sU0m",
-   "name": "Event Name",
-   "startDateTime": "2024-12-22T13:05:00",
-   "venue": {
-    "name": "Venue Name",
-    "address": "800 Main St",
-    "city": "Seattle",
-    "state": "Washington",
-    "postalCode": "98101",
-    "coordinates": {
-      "lat": 47.595083,
-      "lng": -122.331607
-         }
-      },
-   "url": "https://www.ticketmaster.com/event/123",
-   "imageURL": "https://example.com/image.jpg",
-   "info": "Event description",
-   "user": "675bb5d8277e1a64f2033539"
+     "ticketmasterId": "vvG1HZbFH8sU0m",
+     "name": "Event Name",
+     "startDateTime": "2024-12-22T13:05:00",
+     "venue": {
+       "name": "Venue Name",
+       "address": "800 Main St",
+       "city": "Seattle",
+       "state": "Washington",
+       "postalCode": "98101",
+       "coordinates": {
+         "lat": 47.595083,
+         "lng": -122.331607
+       }
+     },
+     "url": "https://www.ticketmaster.com/event/123",
+     "imageURL": "https://example.com/image.jpg",
+     "info": "Event description",
+     "user": "675bb5d8277e1a64f2033539"
    }
    ```
 
@@ -154,34 +156,36 @@ Note: In the below example, the group's front-end repository was named `bb-pract
   - `/api/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01T00:00:00Z&dateRangeEnd=2025-02-28T00:00:00Z&keyword=sports`
 
 - Example JSON Response:
-   
-   ```json
+  ```json
   {
-   name: "UFC Fight Night",
-   dates: {
-      startDate: "2025-02-22",
-      startTime: "15:00:00"
-   },
-   ticketmasterId: "vvG1HZb_53UoGH",
-   url: "https://www.ticketmaster.com/ufc-fight-night-seattle-washington-02-22-2025/event/0F006192D2D9133C",
-   info: "Please visit our website to view the Arena Guide with Bag Policy and Prohibited Items list.",
-   images: [
-      "https://s1.ticketm.net/dam/a/138/09f8507b-e5bd-400f-8363-8c3b83e82138_RECOMENDATION_16_9.jpg",
-      "https://s1.ticketm.net/dam/a/138/09f8507b-e5bd-400f-8363-8c3b83e82138_SOURCE"
-   ],
-   venue: {
-      name: "Climate Pledge Arena",
-      address: "334 1st Ave N",
-      city: "Seattle",
-      state: "Washington",
-      lat: "47.6221261",
-      lon: "-122.35401604"
-   },
-   classification: "Sports"
+  name: "UFC Fight Night",
+  dates: {
+     startDate: "2025-02-22",
+     startTime: "15:00:00"
+  },
+  ticketmasterId: "vvG1HZb_53UoGH",
+  url: "https://www.ticketmaster.com/ufc-fight-night-seattle-washington-02-22-2025/event/0F006192D2D9133C",
+  info: "Please visit our website to view the Arena Guide with Bag Policy and Prohibited Items list.",
+  images: [
+     "https://s1.ticketm.net/dam/a/138/09f8507b-e5bd-400f-8363-8c3b83e82138_RECOMENDATION_16_9.jpg",
+     "https://s1.ticketm.net/dam/a/138/09f8507b-e5bd-400f-8363-8c3b83e82138_SOURCE"
+  ],
+  venue: {
+     name: "Climate Pledge Arena",
+     address: "334 1st Ave N",
+     city: "Seattle",
+     state: "Washington",
+     lat: "47.6221261",
+     lon: "-122.35401604"
+  },
+  classification: "Sports"
   },
   ```
+
 #### Event Sharing Route
+
 1. Share Event
+
    - Method: POST
    - URL: http://localhost:8000/api/email/share-event
    - JSON Request Body:
@@ -202,3 +206,4 @@ Note: In the below example, the group's front-end repository was named `bb-pract
        "info": "Amazing concert event description"
      }
    }
+   ```
