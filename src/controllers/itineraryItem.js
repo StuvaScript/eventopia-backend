@@ -24,7 +24,7 @@ const getSingleItineraryItem = async (req, res) => {
 
   const itineraryItem = await ItineraryItem.findOne({
     _id: id,
-    user: userId, 
+    user: userId,
   });
   if (!itineraryItem) {
     throw new NotFoundError(
@@ -47,7 +47,7 @@ const validateNestedFields = (requiredFields, data, prefix = "") => {
 
 const createItineraryItem = async (req, res) => {
   req.body.user = req.user.userId;
-  console.log("req.body.user", req.body.user)
+  console.log("req.body.user", req.body.user);
   console.log("user:", req.user);
 
   const locationRequiredFields = ["address", "city", "state", "postalCode"];
@@ -126,7 +126,7 @@ const updateItineraryItem = async (req, res) => {
 
 const deleteItineraryItem = async (req, res) => {
   const { id } = req.params;
-  const { userId } = req.user; 
+  const { userId } = req.user;
 
   console.log("id", id);
 
