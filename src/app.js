@@ -27,13 +27,9 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
     httpOnly: true,
     sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
-    // secure: false, //! <-- Stu added for local development
   },
   size: 64,
-  // getTokenFromRequest: (req) => req.headers["x-csrf-token"],
-  //! Stu added
-  getTokenFromRequest: (req) =>
-    req.headers["x-csrf-token"] || req.cookies["x-csrf-token"],
+  getTokenFromRequest: (req) => req.headers["x-csrf-token"],
 });
 
 // CORS
@@ -64,9 +60,6 @@ app.use((req, res, next) => {
   console.log("x-csrf-token Header:", req.headers["x-csrf-token"]);
   console.log("x-csrf-token Cookie:", req.cookies["x-csrf-token"]);
 
-  res.on("finish", () => {
-    console.log("Response Cookies:", res.getHeaders()["set-cookie"]);
-  });
   next();
 });
 
@@ -82,7 +75,7 @@ app.set("trust proxy", 1);
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 2000, // Limit each IP to 200 requests per windowMs
+  max: 2000, // Limit each IP to 200 requests per windowMs //! <-- Stu changed to continue debugging uninterrupted
   trustProxy: process.env.NODE_ENV === "development",
 });
 app.use("/api", apiLimiter);
