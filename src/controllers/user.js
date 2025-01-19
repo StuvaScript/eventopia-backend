@@ -60,6 +60,7 @@ const login = async (req, res, next) => {
     // generate JWT token and response
     const token = user.createJWT();
     console.log("Generated Jwt token:", token);
+    const expiresIn = process.env.JWT_EXPIRES_IN || 3600;
     res.cookie("token", token, {
       maxAge: parseInt(expiresIn) * 1000,
       httpOnly: true,
