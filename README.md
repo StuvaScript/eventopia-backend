@@ -70,7 +70,7 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    {
    "name": "Event name",
    "date": "2024-12-29",
-   "location": {
+   "venue": {
       "address": "6780 main St",
       "city": "New York",
       "state": "NY",
@@ -88,11 +88,12 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    - Method: PATCH
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
    - JSON Request Body:
+
    ```
    {
    "name": "updated event name",
    "date": "updated date",
-   "location": {
+   "venue": {
       "address": "updated address",
       "city": "updated city",
       "state": "updated state",

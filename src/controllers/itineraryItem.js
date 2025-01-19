@@ -50,22 +50,22 @@ const createItineraryItem = async (req, res) => {
   console.log("req.body.user", req.body.user);
   console.log("user:", req.user);
 
-  const locationRequiredFields = ["address", "city", "state", "postalCode"];
+  const venueRequiredFields = ["address", "city", "state", "postalCode"];
   const coordinatesRequiredFields = ["lat", "lng"];
 
-  const missingLocationFields = validateNestedFields(
-    locationRequiredFields,
-    req.body.location || {},
-    "location"
+  const missingVenueFields = validateNestedFields(
+    venueRequiredFields,
+    req.body.venue || {},
+    "venue"
   );
   const missingCoordinatesRequiredFields = validateNestedFields(
     coordinatesRequiredFields,
-    req.body.location?.coordinates || {},
-    "location.coordinates"
+    req.body.venue?.coordinates || {},
+    "venue.coordinates"
   );
 
   const missingFields = [
-    ...missingLocationFields,
+    ...missingVenueFields,
     ...missingCoordinatesRequiredFields,
   ];
 
@@ -83,22 +83,22 @@ const updateItineraryItem = async (req, res) => {
   console.log(id);
   const updates = req.body;
 
-  const locationRequiredFields = ["address", "city", "state", "postalCode"];
+  const venueRequiredFields = ["address", "city", "state", "postalCode"];
   const coordinatesRequiredFields = ["lat", "lng"];
 
-  const missingLocationFields = validateNestedFields(
-    locationRequiredFields,
-    updates.location || {},
-    "location"
+  const missingVenueFields = validateNestedFields(
+    venueRequiredFields,
+    updates.venue || {},
+    "venue"
   );
   const missingCoordinatesRequiredFields = validateNestedFields(
     coordinatesRequiredFields,
-    updates.location?.coordinates || {},
-    "location.coordinates"
+    updates.venue?.coordinates || {},
+    "venue.coordinates"
   );
 
   const missingFields = [
-    ...missingLocationFields,
+    ...missingVenueFields,
     ...missingCoordinatesRequiredFields,
   ];
 

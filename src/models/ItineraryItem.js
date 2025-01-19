@@ -5,7 +5,10 @@ const ItineraryItemSchema = new mongoose.Schema(
     ticketmasterId: {
       type: String,
       required: [true, "Error: no ticketmasterId provided for itinerary item."],
-      unique: [true, "Error: duplicate ticketmasterId provided for itinerary item."],
+      unique: [
+        true,
+        "Error: duplicate ticketmasterId provided for itinerary item.",
+      ],
     },
     name: {
       type: String,
@@ -40,11 +43,11 @@ const ItineraryItemSchema = new mongoose.Schema(
       coordinates: {
         lat: {
           type: Number,
-          required: [true, "Error: no latitude provided for location."],
+          required: [true, "Error: no latitude provided for venue."],
         },
         lng: {
           type: Number,
-          required: [true, "Error: no longitude provided for location."],
+          required: [true, "Error: no longitude provided for venue."],
         },
       },
     },
