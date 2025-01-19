@@ -7,6 +7,7 @@ const { UnauthenticatedError } = require("../errors/unauthenticated");
 const { NotFoundError } = require("../errors/not_found");
 const { sendEmail } = require("../utils/emails");
 
+
 const register = async (req, res) => {
   try {
     const user = await User.create({ ...req.body });
@@ -59,9 +60,14 @@ const login = async (req, res, next) => {
     // generate JWT token and response
     const token = user.createJWT();
     console.log("Generated Jwt token:", token);
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      maxAge: parseInt(expiresIn) * 1000,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict"
+    });
     res.status(StatusCodes.OK).json({
-      user: { id: user._id, name: `${user.firstName} ${user.lastName}` }, // <-- added "id: user._id,"
+      user: { id: user._id, name: `${user.firstName} ${user.lastName}`, city: user.city, state: user.state }, 
       token,
     });
   } catch (error) {
@@ -105,8 +111,14 @@ const requestPasswordReset = async (req, res) => {
   console.log("User document after save:", user);
 
   // send email with reset token
-  const resetUrl = `http://localhost:8000/api/v1/user/reset-password/${resetToken}`;
-  const message = `Click the following link to reset your password: ${resetUrl}`;
+  // const resetUrl = `http://localhost:8000/api/v1/user/reset-password/${resetToken}`;
+  const isProduction = process.env.NODE_ENV === "production";
+  console.log(`Running in  ${process.env.NODE_ENV} mode`);
+  const resetUrl = isProduction 
+    ? 'https://production-domain.com/resetPassword/'
+    : 'http://localhost:5173/resetpassword/';
+
+  const message = `Click the following link to reset your password: ${resetUrl}${resetToken}`;
 
   try {
     await sendEmail({
@@ -114,8 +126,10 @@ const requestPasswordReset = async (req, res) => {
       subject: "Password Reset Request",
       message,
     });
+    console.log("Email sent successfully.");
     res.status(StatusCodes.OK).json({ msg: "Password reset email sent" });
   } catch (error) {
+    console.error("Error details:", error);
     throw new BadRequestError("Error sending password reset email");
   }
 };

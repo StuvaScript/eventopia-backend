@@ -45,16 +45,21 @@ transporter.verify((error) => {
 
 
 // test
-// (async () => {
-//     try {
-//         await sendEmail({
-//             to: 'sisiwang242@gmail.com',
-//             subject: 'Password Reset Request',
-//             message: 'Click the link to reset your password.',
-//         });
-//     } catch (error) {
-//         console.error("Email sending failed:", error.message);
-//     }
-// })();
+(async () => {
+    try {
+        await sendEmail({
+            to: 'sisiwang242@gmail.com',
+            subject: 'Password Reset Request',
+            message: 'Click the link to reset your password.',
+        });
+    } catch (error) {
+        console.error("Email sending failed:", error.message);
+    }
+})();
+
+module.exports = {
+    sendEmail,
+}
+
 
 
