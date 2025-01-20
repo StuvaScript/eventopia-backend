@@ -13,7 +13,7 @@ const ItineraryItemSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "Error: no name provided for itinerary item."],
-      maxlength: 25,
+      maxlength: 100,
     },
     startDateTime: {
       type: Date,
