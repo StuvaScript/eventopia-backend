@@ -87,4 +87,9 @@ UserSchema.methods.comparePassword = async function (userPassword) {
 
 // UserSchema.index({ email: 1 }, { unique: true });
 
+
+// UserSchema.index({ email: 1 }, { unique: true }); --> This is a duplicate
+
 module.exports = mongoose.model("User", UserSchema);
+
+

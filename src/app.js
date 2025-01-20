@@ -34,7 +34,7 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
 
 // CORS
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: process.env.CORS_ORIGIN,
   credentials: true,
 }));
 
@@ -46,7 +46,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(mongoSanitize());
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
-app.use(express.json());
+
 
 // CSRF Token Route
 app.get('/api/v1/csrf-token', (req, res) => {
@@ -66,7 +66,7 @@ app.use("/api", apiLimiter);
 // Routes
 app.use("/api/email", nodemailerRouter);
 app.use("/api/ticketmaster", ticketmasterRouter);
-app.use('/api/v1/user', userRouter);
+app.use('/api/v1/user', doubleCsrfProtection, userRouter);
 app.use('/api/v1/itinerary', doubleCsrfProtection, itineraryRouter);
 
 
