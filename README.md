@@ -29,6 +29,22 @@ Note: In the below example, the group's front-end repository was named `bb-pract
 
 > Update the .node-version file to match the version of Node.js the **team** is using. This is used by Render.com to [deploy the app](https://render.com/docs/node-version).
 
+### Authentication
+
+Most endpoints require authentication via JWT token:
+
+- After login/register, include the returned token in requests
+- Add to request headers: `Authorization: Bearer <token>`
+
+### Error Responses
+
+The API returns consistent error responses:
+
+- 400 Bad Request: Invalid input or validation errors
+- 401 Unauthorized: Missing or invalid authentication
+- 404 Not Found: Requested resource doesn't exist
+- 500 Internal Server Error: Server-side issues
+
 ### API Endpoints Summary
 
 #### User Routes
@@ -63,17 +79,93 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    }
    ```
 
+#### Password Reset Routes
+
+1. Request Password Reset
+
+   - Method: POST
+   - URL: http://localhost:8000/api/v1/user/forgot-password
+   - JSON Request Body:
+
+   ```json
+   {
+     "email": "example@gmail.com"
+   }
+   ```
+
+2. Reset Password
+
+   - Method: POST
+   - URL: http://localhost:8000/api/v1/user/reset-password
+   - JSON Request Body:
+
+   ```json
+   {
+     "resetToken": "generated-reset-token",
+     "newPassword": "newPassword123"
+   }
+   ```
+
+#### Events Search Route
+
+- Method: GET
+- URL: http://localhost:8000/api/ticketmaster/events/:city/:stateCode
+
+- Parameters:
+
+- city (required): Name of city
+- stateCode (required): Two-letter state code
+- dateRangeStart (optional): YYYY-MM-DDTHH:MM:SS format
+- dateRangeEnd (optional): YYYY-MM-DDTHH:MM:SS format
+
+- Example Request:
+
+- `/api/ticketmaster/events/CityName/TwoLetterStateCode?dateRangeStart=YYYY-MM-DDTHH:MM:SSZ&dateRangeEnd=YYYY-MM-DDTHH:MM:SSZ&keyword=keyword`
+- `/api/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01T00:00:00Z&dateRangeEnd=2025-02-28T00:00:00Z&keyword=sports`
+
+- Example JSON Response:
+
+```json
+{
+name: "UFC Fight Night",
+dates: {
+   startDate: "2025-02-22",
+   startTime: "15:00:00"
+},
+ticketmasterId: "vvG1HZb_53UoGH",
+url: "https://www.ticketmaster.com/ufc-fight-night-seattle-washington-02-22-2025/event/0F006192D2D9133C",
+info: "Please visit our website to view the Arena Guide with Bag Policy and Prohibited Items list.",
+images: [
+   "https://s1.ticketm.net/dam/a/138/09f8507b-e5bd-400f-8363-8c3b83e82138_RECOMENDATION_16_9.jpg",
+   "https://s1.ticketm.net/dam/a/138/09f8507b-e5bd-400f-8363-8c3b83e82138_SOURCE"
+],
+venue: {
+   name: "Climate Pledge Arena",
+   address: "334 1st Ave N",
+   city: "Seattle",
+   state: "Washington",
+   lat: "47.6221261",
+   lon: "-122.35401604"
+},
+classification: "Sports"
+},
+```
+
 #### Itinerary Routes:
 
 1. Get All Itinerary:
+
    - Method: GET
    - URL: http://localhost:8000/api/v1/itinerary/
    - Requires: Authentication token
-2. Get Single Itinerary
+
+2. Get Single Itinerary Item:
+
    - Method: GET
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
    - Requires: Authentication token
-3. Create Itinerary
+
+3. Create Itinerary Item:
 
    - Method: POST
    - URL: http://localhost:8000/api/v1/itinerary/
@@ -103,7 +195,7 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    }
    ```
 
-4. Update Itinerary
+4. Update Itinerary Item:
 
    - Method: PATCH
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
@@ -133,54 +225,10 @@ Note: In the below example, the group's front-end repository was named `bb-pract
    }
    ```
 
-5. Delete Itinerary
+5. Delete Itinerary Item:
    - Method: DELETE
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
    - Requires: Authentication token
-
-#### Events Search Route
-
-- Method: GET
-- URL: http://localhost:8000/api/ticketmaster/events/:city/:stateCode
-
-- Parameters:
-
-  - city (required): Name of city
-  - stateCode (required): Two-letter state code
-  - dateRangeStart (optional): YYYY-MM-DDTHH:MM:SS format
-  - dateRangeEnd (optional): YYYY-MM-DDTHH:MM:SS format
-
-- Example Request:
-
-  - `/api/ticketmaster/events/CityName/TwoLetterStateCode?dateRangeStart=YYYY-MM-DDTHH:MM:SSZ&dateRangeEnd=YYYY-MM-DDTHH:MM:SSZ&keyword=keyword`
-  - `/api/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01T00:00:00Z&dateRangeEnd=2025-02-28T00:00:00Z&keyword=sports`
-
-- Example JSON Response:
-  ```json
-  {
-  name: "UFC Fight Night",
-  dates: {
-     startDate: "2025-02-22",
-     startTime: "15:00:00"
-  },
-  ticketmasterId: "vvG1HZb_53UoGH",
-  url: "https://www.ticketmaster.com/ufc-fight-night-seattle-washington-02-22-2025/event/0F006192D2D9133C",
-  info: "Please visit our website to view the Arena Guide with Bag Policy and Prohibited Items list.",
-  images: [
-     "https://s1.ticketm.net/dam/a/138/09f8507b-e5bd-400f-8363-8c3b83e82138_RECOMENDATION_16_9.jpg",
-     "https://s1.ticketm.net/dam/a/138/09f8507b-e5bd-400f-8363-8c3b83e82138_SOURCE"
-  ],
-  venue: {
-     name: "Climate Pledge Arena",
-     address: "334 1st Ave N",
-     city: "Seattle",
-     state: "Washington",
-     lat: "47.6221261",
-     lon: "-122.35401604"
-  },
-  classification: "Sports"
-  },
-  ```
 
 #### Event Sharing Route
 
