@@ -69,7 +69,7 @@ UserSchema.pre("save", async function (next) {
   this.firstName = this.firstName.trim();
   this.lastName = this.lastName.trim();
   const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  // this.password = await bcrypt.hash(this.password, salt); // <--- commented out per Uma and Josh
   next();
 });
 
@@ -84,11 +84,6 @@ UserSchema.methods.createJWT = function () {
 UserSchema.methods.comparePassword = async function (userPassword) {
   return await bcrypt.compare(userPassword, this.password);
 };
-
-// UserSchema.index({ email: 1 }, { unique: true });
-
-
-// UserSchema.index({ email: 1 }, { unique: true }); --> This is a duplicate
 
 module.exports = mongoose.model("User", UserSchema);
 
