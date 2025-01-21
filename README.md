@@ -29,131 +29,229 @@ Note: In the below example, the group's front-end repository was named `bb-pract
 
 > Update the .node-version file to match the version of Node.js the **team** is using. This is used by Render.com to [deploy the app](https://render.com/docs/node-version).
 
+### Authentication
+
+Most endpoints require authentication via JWT token:
+
+- After login/register, include the returned token in requests
+- Add to request headers: `Authorization: Bearer <token>`
+
+### Error Responses
+
+The API returns consistent error responses:
+
+- 400 Bad Request: Invalid input or validation errors
+- 401 Unauthorized: Missing or invalid authentication
+- 404 Not Found: Requested resource doesn't exist
+- 500 Internal Server Error: Server-side issues
+
 ### API Endpoints Summary
 
 #### User Routes
 
 1. Register
+
    - Method: POST
    - URL: http://localhost:8000/api/v1/user/register
    - JSON Request Body:
-   ```
+
+   ```json
    {
-    "firstName": "Amanda",
-    "lastName": "Hockmuth",
-    "email": "example@gmail.com",
-    "password": "Password129",
-    "city": "New York",
-    "state": "NY"
-    }
+     "firstName": "Amanda",
+     "lastName": "Hockmuth",
+     "email": "example@gmail.com",
+     "password": "Password129",
+     "city": "New York",
+     "state": "NY"
+   }
    ```
+
 2. Login
+
    - Method: POST
    - URL: http://localhost:8000/api/v1/user/login
-   - Credentials:
-     - Username: Email(e.g., example@gmail.com)
-     - Password: Password(e.g., Password123)
+   - JSON Request Body:
+
+   ```json
+   {
+     "email": "example@gmail.com",
+     "password": "Password129"
+   }
+   ```
+
+#### Password Reset Routes
+
+1. Request Password Reset
+
+   - Method: POST
+   - URL: http://localhost:8000/api/v1/user/forgot-password
+   - JSON Request Body:
+
+   ```json
+   {
+     "email": "example@gmail.com"
+   }
+   ```
+
+2. Reset Password
+
+   - Method: POST
+   - URL: http://localhost:8000/api/v1/user/reset-password
+   - JSON Request Body:
+
+   ```json
+   {
+     "resetToken": "generated-reset-token",
+     "newPassword": "newPassword123"
+   }
+   ```
+
+#### Events Search Route
+
+- Method: GET
+- URL: http://localhost:8000/api/ticketmaster/events/:city/:stateCode
+
+- Parameters:
+
+- city (required): Name of city
+- stateCode (required): Two-letter state code
+- dateRangeStart (optional): YYYY-MM-DDTHH:MM:SS format
+- dateRangeEnd (optional): YYYY-MM-DDTHH:MM:SS format
+
+- Example Request:
+
+- `/api/ticketmaster/events/CityName/TwoLetterStateCode?dateRangeStart=YYYY-MM-DDTHH:MM:SSZ&dateRangeEnd=YYYY-MM-DDTHH:MM:SSZ&keyword=keyword`
+- `/api/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01T00:00:00Z&dateRangeEnd=2025-02-28T00:00:00Z&keyword=sports`
+
+- Example JSON Response:
+
+```json
+{
+name: "UFC Fight Night",
+dates: {
+   startDate: "2025-02-22",
+   startTime: "15:00:00"
+},
+ticketmasterId: "vvG1HZb_53UoGH",
+url: "https://www.ticketmaster.com/ufc-fight-night-seattle-washington-02-22-2025/event/0F006192D2D9133C",
+info: "Please visit our website to view the Arena Guide with Bag Policy and Prohibited Items list.",
+images: [
+   "https://s1.ticketm.net/dam/a/138/09f8507b-e5bd-400f-8363-8c3b83e82138_RECOMENDATION_16_9.jpg",
+   "https://s1.ticketm.net/dam/a/138/09f8507b-e5bd-400f-8363-8c3b83e82138_SOURCE"
+],
+venue: {
+   name: "Climate Pledge Arena",
+   address: "334 1st Ave N",
+   city: "Seattle",
+   state: "Washington",
+   lat: "47.6221261",
+   lon: "-122.35401604"
+},
+classification: "Sports"
+},
+```
 
 #### Itinerary Routes:
 
 1. Get All Itinerary:
+
    - Method: GET
    - URL: http://localhost:8000/api/v1/itinerary/
-2. Get Single Itinerary
+   - Requires: Authentication token
+
+2. Get Single Itinerary Item:
+
    - Method: GET
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
-3. Create Itinerary
+   - Requires: Authentication token
+
+3. Create Itinerary Item:
+
    - Method: POST
    - URL: http://localhost:8000/api/v1/itinerary/
+   - Requires: Authentication token
    - JSON Request Body:
-   ```
+
+   ```json
    {
-   "name": "Event name",
-   "date": "2024-12-29",
-   "venue": {
-      "address": "6780 main St",
-      "city": "New York",
-      "state": "NY",
-      "postalCode": "11100",
-      "coordinates": {
-         "lat": 5,
-         "lng": 5
-      }
-   },
-   "user": "675bb5d8277e1a64f2033539"
+     "ticketmasterId": "vvG1HZbFH8sU0m",
+     "name": "Event Name",
+     "startDateTime": "2024-12-22T13:05:00",
+     "venue": {
+       "name": "Venue Name",
+       "address": "800 Main St",
+       "city": "Seattle",
+       "state": "Washington",
+       "postalCode": "98101",
+       "coordinates": {
+         "lat": 47.595083,
+         "lng": -122.331607
+       }
+     },
+     "url": "https://www.ticketmaster.com/event/123",
+     "imageURL": "https://example.com/image.jpg",
+     "info": "Event description",
+     "user": "675bb5d8277e1a64f2033539"
    }
    ```
-4. Update Itinerary
+
+4. Update Itinerary Item:
 
    - Method: PATCH
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
+   - Requires: Authentication token
    - JSON Request Body:
 
-   ```
+   ```json
    {
-   "name": "updated event name",
-   "date": "updated date",
-   "venue": {
-      "address": "updated address",
-      "city": "updated city",
-      "state": "updated state",
-      "postalCode": "updated postalCode",
-      "coordinates": {
-         "lat": 5,
-         "lng": 5
-      }
-   },
-   "user": "675bb5d8277e1a64f2033539"
+     "ticketmasterId": "vvG1HZbFH8sU0m",
+     "name": "Event Name",
+     "startDateTime": "2024-12-22T13:05:00",
+     "venue": {
+       "name": "Venue Name",
+       "address": "800 Main St",
+       "city": "Seattle",
+       "state": "Washington",
+       "postalCode": "98101",
+       "coordinates": {
+         "lat": 47.595083,
+         "lng": -122.331607
+       }
+     },
+     "url": "https://www.ticketmaster.com/event/123",
+     "imageURL": "https://example.com/image.jpg",
+     "info": "Event description",
+     "user": "675bb5d8277e1a64f2033539"
    }
-
    ```
 
-5. Delete Itinerary
+5. Delete Itinerary Item:
    - Method: DELETE
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
+   - Requires: Authentication token
 
-#### Events Search Routes
+#### Event Sharing Route
 
-- Method: GET
-- URL: https://hh-team1-back.onrender.com/api/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01&dateRangeEnd=2025-02-05
+1. Share Event
 
-- Parameters:
+   - Method: POST
+   - URL: http://localhost:8000/api/email/share-event
+   - JSON Request Body:
 
-  - city (required): Name of the city
-  - stateCode (required): Two-letter state code
-  - dateRangeStart (optional): Start date in YYYY-MM-DD format
-  - dateRangeEnd (optional): End date in YYYY-MM-DD format
-
-- Example requests:
-
-  - `https://hh-team1-back.onrender.com/api/ticketmaster/events/Seattle/WA?dateRangeStart=2025-02-01&dateRangeEnd=2025-02-05`
-  - `https://hh-team1-back.onrender.com/api/ticketmaster/events/Seattle/WA?dateRangeStart=2024-02-01`
-  - `https://hh-team1-back.onrender.com/api/ticketmaster/events/Seattle/WA?keyword=sports`
-  - `https://hh-team1-back.onrender.com/api/ticketmaster/events/Seattle/WA`
-
-- Example JSON Response:
-  ```
-  {
-     name: "Seattle Seahawks v Minnesota Vikings",
-     dates: {
-        startDate: "2024-12-22",
-        startTime: "13:05:00"
-     },
-     ticketmasterId: "vvG1HZbFH8sU0m",
-     url: "https://www.ticketmaster.com/seattle-seahawks-v-minnesota-vikings-seattle-washington-12-22-2024/event/0F00608F10C7692E",
-     info: "Flex Schedule: Please be aware that there are certain games that are subject to flexible scheduling and the date and time of those games may be changed from what is currently reflected on the schedule and what may appear on the ticket. For more detailed information about NFL flexible scheduling procedures for the 2024 NFL Season, please visit https://www.nfl.com/schedules/flexible-scheduling-procedures. Value tickets are not eligible for resale. Resale activity may result in ticket cancellation without notice.",
-     images: [
-        "https://s1.ticketm.net/dam/a/2db/0bae3d29-946e-44fd-aebd-2618ce30b2db_RECOMENDATION_16_9.jpg",
-        "https://s1.ticketm.net/dam/a/2db/0bae3d29-946e-44fd-aebd-2618ce30b2db_TABLET_LANDSCAPE_LARGE_16_9.jpg"
-        ],
-     venue: {
-        name: "Lumen Field",
-        address: "800 Occidental Ave S",
-        city: "Seattle",
-        state: "Washington",
-        lat: "47.595083",
-        lon: "-122.331607"
-        },
-     classification: "Sports"
-  }
-  ```
+   ```json
+   {
+     "recipientEmail": "friend@example.com",
+     "userName": "Jane Doe",
+     "eventDetails": {
+       "name": "Concert Event",
+       "startDateTime": "2024-12-22T13:05:00",
+       "venue": {
+         "name": "Concert Hall",
+         "address": "123 Music Ave",
+         "city": "Seattle",
+         "state": "Washington"
+       },
+       "info": "Amazing concert event description"
+     }
+   }
+   ```
