@@ -117,12 +117,10 @@ const nodemailerRouter = require("./routes/nodemailerRouter");
 // });
 
 // CORS
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: process.env.CORS_ORIGIN,
+  credentials: true,
+}));
 
 // Middleware
 app.use(helmet());
