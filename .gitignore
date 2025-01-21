@@ -18,4 +18,9 @@ node_modules/
 # other
 .DS_Store
 
-src/models/OldItineraryItem.js
+/src/csrfVersion.js 
+/src/middleware/originalAuthentication.js 
+
+
+
+
