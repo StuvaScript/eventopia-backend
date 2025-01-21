@@ -24,7 +24,7 @@ const getSingleItineraryItem = async (req, res) => {
 
   const itineraryItem = await ItineraryItem.findOne({
     _id: id,
-    user: userId, 
+    user: userId,
   });
   if (!itineraryItem) {
     throw new NotFoundError(
@@ -47,25 +47,25 @@ const validateNestedFields = (requiredFields, data, prefix = "") => {
 
 const createItineraryItem = async (req, res) => {
   req.body.user = req.user.userId;
-  console.log("req.body.user", req.body.user)
+  console.log("req.body.user", req.body.user);
   console.log("user:", req.user);
 
-  const locationRequiredFields = ["address", "city", "state", "postalCode"];
+  const venueRequiredFields = ["address", "city", "state", "postalCode"];
   const coordinatesRequiredFields = ["lat", "lng"];
 
-  const missingLocationFields = validateNestedFields(
-    locationRequiredFields,
-    req.body.location || {},
-    "location"
+  const missingVenueFields = validateNestedFields(
+    venueRequiredFields,
+    req.body.venue || {},
+    "venue"
   );
   const missingCoordinatesRequiredFields = validateNestedFields(
     coordinatesRequiredFields,
-    req.body.location?.coordinates || {},
-    "location.coordinates"
+    req.body.venue?.coordinates || {},
+    "venue.coordinates"
   );
 
   const missingFields = [
-    ...missingLocationFields,
+    ...missingVenueFields,
     ...missingCoordinatesRequiredFields,
   ];
 
@@ -83,22 +83,22 @@ const updateItineraryItem = async (req, res) => {
   console.log(id);
   const updates = req.body;
 
-  const locationRequiredFields = ["address", "city", "state", "postalCode"];
+  const venueRequiredFields = ["address", "city", "state", "postalCode"];
   const coordinatesRequiredFields = ["lat", "lng"];
 
-  const missingLocationFields = validateNestedFields(
-    locationRequiredFields,
-    updates.location || {},
-    "location"
+  const missingVenueFields = validateNestedFields(
+    venueRequiredFields,
+    updates.venue || {},
+    "venue"
   );
   const missingCoordinatesRequiredFields = validateNestedFields(
     coordinatesRequiredFields,
-    updates.location?.coordinates || {},
-    "location.coordinates"
+    updates.venue?.coordinates || {},
+    "venue.coordinates"
   );
 
   const missingFields = [
-    ...missingLocationFields,
+    ...missingVenueFields,
     ...missingCoordinatesRequiredFields,
   ];
 
@@ -126,7 +126,7 @@ const updateItineraryItem = async (req, res) => {
 
 const deleteItineraryItem = async (req, res) => {
   const { id } = req.params;
-  const { userId } = req.user; 
+  const { userId } = req.user;
 
   console.log("id", id);
 

@@ -27,6 +27,7 @@ const UserSchema = new mongoose.Schema(
       ],
       lowercase: true,
       unique: true,
+      index: true, // Removed index from below and added here
     },
     password: {
       type: String,
@@ -53,7 +54,7 @@ const UserSchema = new mongoose.Schema(
           console.log(value);
           return /^[A-Z]{2}$/.test(value);
         },
-        
+
         message: "State must be a valid US state abbreviation",
       },
     },
@@ -84,7 +85,11 @@ UserSchema.methods.comparePassword = async function (userPassword) {
   return await bcrypt.compare(userPassword, this.password);
 };
 
+// UserSchema.index({ email: 1 }, { unique: true });
+
 
 // UserSchema.index({ email: 1 }, { unique: true }); --> This is a duplicate
 
 module.exports = mongoose.model("User", UserSchema);
+
+
