@@ -43,7 +43,7 @@ const shareEvent = async (req, res) => {
           <p><strong>Date:</strong> ${formatDateTime(
             eventDetails.startDateTime
           )}</p>
-          <p><strong>Location:</strong> ${eventDetails.venue.name}, ${
+          <p><strong>Venue:</strong> ${eventDetails.venue.name}, ${
       eventDetails.venue.address
     }, ${eventDetails.venue.city}, ${eventDetails.venue.state}</p>
           <p><strong>Details:</strong> ${eventDetails.info || ""}</p>

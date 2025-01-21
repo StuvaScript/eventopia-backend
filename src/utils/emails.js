@@ -57,4 +57,9 @@ transporter.verify((error) => {
 //     }
 // })();
 
+module.exports = {
+    sendEmail,
+}
+
+
 
