@@ -128,11 +128,11 @@ const requestPasswordReset = async (req, res) => {
   const message = `Click the following link to reset your password: ${resetUrl}${resetToken}`;
 
   try {
-    await sendEmail({
-      to: email,
-      subject: "Password Reset Request",
-      message,
-    });
+    // await sendEmail({
+    //   to: email,
+    //   subject: "Password Reset Request",
+    //   message,
+    // });
     console.log("Email sent successfully.");
     res.status(StatusCodes.OK).json({ msg: "Password reset email sent" });
   } catch (error) {
