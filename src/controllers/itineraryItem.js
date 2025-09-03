@@ -47,46 +47,87 @@ const validateNestedFields = (requiredFields, data, prefix = "") => {
 
 // itineraryItem.js controller
 const createItineraryItem = async (req, res) => {
-  const { ticketmasterId, name, startDateTime, venue, url, imageURL, info } =
-    req.body;
+  try {
+    const { ticketmasterId, name, startDateTime, venue, url, imageURL, info } =
+      req.body;
 
-  // Required fields
-  const missingFields = [];
-  if (!ticketmasterId) missingFields.push("ticketmasterId");
-  if (!name) missingFields.push("name");
-  if (!startDateTime) missingFields.push("startDateTime");
+    // Make sure required fields are present
+    if (!ticketmasterId || !name || !startDateTime) {
+      return res.status(400).json({
+        error:
+          "Missing required fields: ticketmasterId, name, or startDateTime",
+      });
+    }
 
-  if (!venue) {
-    missingFields.push("venue");
-  } else {
-    if (!venue.name) missingFields.push("venue.name");
-    if (!venue.address) missingFields.push("venue.address");
-    if (!venue.city) missingFields.push("venue.city");
-    if (!venue.state) missingFields.push("venue.state");
-    if (!venue.postalCode) missingFields.push("venue.postalCode");
-    // ✅ Make coordinates optional
-    // if (!venue.coordinates?.lat) missingFields.push("venue.coordinates.lat");
-    // if (!venue.coordinates?.lng) missingFields.push("venue.coordinates.lng");
+    // Ensure venue exists and has defaults for missing fields
+    const safeVenue = {
+      name: venue?.name || "Unknown Venue",
+      address: venue?.address || "Unknown Address",
+      city: venue?.city || "Unknown City",
+      state: venue?.state || "Unknown State",
+      postalCode: venue?.postalCode || "00000",
+    };
+
+    // Create the itinerary item
+    const itineraryItem = await ItineraryItem.create({
+      ticketmasterId,
+      name,
+      startDateTime,
+      venue: safeVenue,
+      url: url || "",
+      imageURL: imageURL || "",
+      info: info || "",
+      user: req.user.userId, // attach logged-in user from auth middleware
+    });
+
+    return res.status(201).json({ itineraryItem });
+  } catch (error) {
+    console.error("Error in createItineraryItem:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
-
-  if (missingFields.length > 0) {
-    throw new BadRequestError(`Missing fields: ${missingFields.join(", ")}`);
-  }
-
-  // Create and save itinerary
-  const itineraryItem = await ItineraryItem.create({
-    ticketmasterId,
-    name,
-    startDateTime,
-    venue,
-    url,
-    imageURL,
-    info,
-    user: req.user.userId,
-  });
-
-  res.status(StatusCodes.CREATED).json(itineraryItem);
 };
+
+// const createItineraryItem = async (req, res) => {
+//   const { ticketmasterId, name, startDateTime, venue, url, imageURL, info } =
+//     req.body;
+
+//   // Required fields
+//   const missingFields = [];
+//   if (!ticketmasterId) missingFields.push("ticketmasterId");
+//   if (!name) missingFields.push("name");
+//   if (!startDateTime) missingFields.push("startDateTime");
+
+//   if (!venue) {
+//     missingFields.push("venue");
+//   } else {
+//     if (!venue.name) missingFields.push("venue.name");
+//     if (!venue.address) missingFields.push("venue.address");
+//     if (!venue.city) missingFields.push("venue.city");
+//     if (!venue.state) missingFields.push("venue.state");
+//     if (!venue.postalCode) missingFields.push("venue.postalCode");
+//     // ✅ Make coordinates optional
+//     // if (!venue.coordinates?.lat) missingFields.push("venue.coordinates.lat");
+//     // if (!venue.coordinates?.lng) missingFields.push("venue.coordinates.lng");
+//   }
+
+//   if (missingFields.length > 0) {
+//     throw new BadRequestError(`Missing fields: ${missingFields.join(", ")}`);
+//   }
+
+//   // Create and save itinerary
+//   const itineraryItem = await ItineraryItem.create({
+//     ticketmasterId,
+//     name,
+//     startDateTime,
+//     venue,
+//     url,
+//     imageURL,
+//     info,
+//     user: req.user.userId,
+//   });
+
+//   res.status(StatusCodes.CREATED).json(itineraryItem);
+// };
 
 // const createItineraryItem = async (req, res) => {
 //   req.body.user = req.user.userId;
