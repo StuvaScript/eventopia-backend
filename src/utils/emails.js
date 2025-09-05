@@ -1,48 +1,49 @@
-require('dotenv').config();
-const nodemailer = require('nodemailer');
-const { BadRequestError } = require('../errors/bad_request');
-
+require("dotenv").config();
+const nodemailer = require("nodemailer");
+const { BadRequestError } = require("../errors/bad_request");
 
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT, 10),
-    secure: process.env.SMTP_PORT === '465', 
-    auth: {
-        user: process.env.SENDER_EMAIL,
-        pass: process.env.SENDER_EMAIL_PASSWORD,
-    },
-    tls: {
-        rejectUnauthorized: false,
-    },
-    debug: true,
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT, 10),
+  secure: process.env.SMTP_PORT === "465",
+  auth: {
+    user: process.env.SENDER_EMAIL,
+    pass: process.env.SENDER_EMAIL_PASSWORD,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+  debug: true,
 });
 
-const sendEmail = async ({ to, subject, message, replyTo = 'noreply@gmail.com' }) => {
-    const mailOptions = {
-        from: `"No Reply" <${process.env.SENDER_EMAIL}>`,
-        to,
-        subject,
-        text: message,
-        replyTo,
-    };
+const sendEmail = async ({
+  to,
+  subject,
+  message,
+  replyTo = "noreply@gmail.com",
+}) => {
+  const mailOptions = {
+    from: `"No Reply" <${process.env.SENDER_EMAIL}>`,
+    to,
+    subject,
+    text: message,
+    replyTo,
+  };
 
-    try {
-        await transporter.sendMail(mailOptions);
-        console.log(`Email successfully sent to ${to}`);
-    } catch (error) {
-        console.error("Error sending email:", error.message);
-        throw new BadRequestError('Error sending email. Please try again later.');
-    }
+  try {
+    await transporter.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Error sending email:", error.message);
+    throw new BadRequestError("Error sending email. Please try again later.");
+  }
 };
 
 transporter.verify((error) => {
-    if (error) {
-        console.error("SMTP connection failed:", error.message);
-    } else {
-        console.log("SMTP connection successful!");
-    }
+  if (error) {
+    console.error("SMTP connection failed:", error.message);
+  } else {
+  }
 });
-
 
 // test
 // (async () => {
@@ -58,8 +59,5 @@ transporter.verify((error) => {
 // })();
 
 module.exports = {
-    sendEmail,
-}
-
-
-
+  sendEmail,
+};

@@ -5,7 +5,6 @@ const { NotFoundError } = require("../errors/not_found");
 const { default: mongoose } = require("mongoose");
 
 const getAllItineraryItems = async (req, res) => {
-  console.log("Req.userId:", req.user);
   const itineraryItems = await ItineraryItem.find({
     user: req.user.userId,
   }).sort("createdAt");
@@ -16,11 +15,7 @@ const getAllItineraryItems = async (req, res) => {
 
 const getSingleItineraryItem = async (req, res) => {
   const { id } = req.params;
-  console.log(`req.user`, req.user);
   const { userId } = req.user; // <-- changed this from 'req.user.userId'
-
-  console.log("User:", userId);
-  console.log("Itinerary Id:", id);
 
   const itineraryItem = await ItineraryItem.findOne({
     _id: id,
@@ -87,84 +82,8 @@ const createItineraryItem = async (req, res) => {
   }
 };
 
-// const createItineraryItem = async (req, res) => {
-//   const { ticketmasterId, name, startDateTime, venue, url, imageURL, info } =
-//     req.body;
-
-//   // Required fields
-//   const missingFields = [];
-//   if (!ticketmasterId) missingFields.push("ticketmasterId");
-//   if (!name) missingFields.push("name");
-//   if (!startDateTime) missingFields.push("startDateTime");
-
-//   if (!venue) {
-//     missingFields.push("venue");
-//   } else {
-//     if (!venue.name) missingFields.push("venue.name");
-//     if (!venue.address) missingFields.push("venue.address");
-//     if (!venue.city) missingFields.push("venue.city");
-//     if (!venue.state) missingFields.push("venue.state");
-//     if (!venue.postalCode) missingFields.push("venue.postalCode");
-//     // ✅ Make coordinates optional
-//     // if (!venue.coordinates?.lat) missingFields.push("venue.coordinates.lat");
-//     // if (!venue.coordinates?.lng) missingFields.push("venue.coordinates.lng");
-//   }
-
-//   if (missingFields.length > 0) {
-//     throw new BadRequestError(`Missing fields: ${missingFields.join(", ")}`);
-//   }
-
-//   // Create and save itinerary
-//   const itineraryItem = await ItineraryItem.create({
-//     ticketmasterId,
-//     name,
-//     startDateTime,
-//     venue,
-//     url,
-//     imageURL,
-//     info,
-//     user: req.user.userId,
-//   });
-
-//   res.status(StatusCodes.CREATED).json(itineraryItem);
-// };
-
-// const createItineraryItem = async (req, res) => {
-//   req.body.user = req.user.userId;
-//   console.log("req.body.user", req.body.user);
-//   console.log("user:", req.user);
-
-//   const venueRequiredFields = ["address", "city", "state", "postalCode"];
-//   const coordinatesRequiredFields = ["lat", "lng"];
-
-//   const missingVenueFields = validateNestedFields(
-//     venueRequiredFields,
-//     req.body.venue || {},
-//     "venue"
-//   );
-//   const missingCoordinatesRequiredFields = validateNestedFields(
-//     coordinatesRequiredFields,
-//     req.body.venue?.coordinates || {},
-//     "venue.coordinates"
-//   );
-
-//   const missingFields = [
-//     ...missingVenueFields,
-//     ...missingCoordinatesRequiredFields,
-//   ];
-
-//   if (missingFields.length > 0) {
-//     throw new BadRequestError(`Missing fields: ${missingFields.join(", ")}`);
-//   }
-
-//   const itineraryItem = await ItineraryItem.create(req.body);
-//   console.log("created item:", itineraryItem);
-//   res.status(StatusCodes.CREATED).json({ itineraryItem });
-// };
-
 const updateItineraryItem = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
   const updates = req.body;
 
   const venueRequiredFields = ["address", "city", "state", "postalCode"];
@@ -212,14 +131,11 @@ const deleteItineraryItem = async (req, res) => {
   const { id } = req.params;
   const { userId } = req.user;
 
-  console.log("id", id);
-
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new BadRequestError(`Invalid ID format: ${id}`);
   }
 
   const objectId = new mongoose.Types.ObjectId(id);
-  console.log("objectId:", objectId);
   const itineraryItem = await ItineraryItem.findOneAndDelete({
     _id: id,
     user: userId,

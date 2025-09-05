@@ -51,7 +51,6 @@ const UserSchema = new mongoose.Schema(
       maxlength: 2,
       validate: {
         validator: function (value) {
-          console.log(value);
           return /^[A-Z]{2}$/.test(value);
         },
 

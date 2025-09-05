@@ -19,19 +19,29 @@ exports.searchEvents = async (req, res) => {
   // Build base URL with required parameters
   let url = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${apiKey}&city=${city}&stateCode=${stateCode}`;
 
-  // Add dates if provided, format with Z time
-  if (dateRangeStart) {
-    url += `&startDateTime=${dateRangeStart}`;
-  }
-  if (dateRangeEnd) {
-    url += `&endDateTime=${dateRangeEnd}`;
-  }
+  // Build safe date params
+  const now = new Date();
+  const safeStart =
+    dateRangeStart && dateRangeStart !== "Z"
+      ? new Date(dateRangeStart).toISOString().split(".")[0] + "Z" // strip milliseconds
+      : new Date(now.setHours(0, 0, 0, 0)).toISOString().split(".")[0] + "Z";
+
+  const safeEnd =
+    dateRangeEnd && dateRangeEnd !== "Z"
+      ? new Date(dateRangeEnd).toISOString().split(".")[0] + "Z"
+      : new Date(new Date().setDate(new Date().getDate() + 14))
+          .toISOString()
+          .split(".")[0] + "Z";
+
+  // Add dates if provided
+  if (safeStart) url += `&startDateTime=${safeStart}`;
+  if (safeEnd) url += `&endDateTime=${safeEnd}`;
+
   if (keyword) {
     url += `&keyword=${keyword}`;
   }
 
   try {
-    console.log(`Trying URL: ${url}`);
     const response = await axios.get(url);
 
     // Check for presence of events in response data
@@ -66,7 +76,20 @@ exports.searchEvents = async (req, res) => {
       res.json(formattedEvents);
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error fetching events" + url });
+    if (error.response) {
+      console.error("Ticketmaster API Error:", {
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data,
+        url,
+      });
+      return res.status(error.response.status).json({
+        error: error.response.data,
+        url,
+      });
+    } else {
+      console.error("Unexpected Error:", error.message);
+      return res.status(500).json({ error: error.message, url });
+    }
   }
 };

@@ -9,11 +9,8 @@ const { sendEmail } = require("../utils/emails");
 
 const register = async (req, res) => {
   try {
-    console.log(req.body);
-
     const user = await User.create({ ...req.body });
     const token = user.createJWT();
-    console.log("created user:", user);
 
     res.status(StatusCodes.CREATED).json({
       user: { id: user._id, name: `${user.firstName} ${user.lastName}` }, // <-- added "id: user._id,"
@@ -32,11 +29,6 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res, next) => {
-  console.log("login request body:", req.body);
-  console.log("login request email:", req.body.email);
-  console.log("login request password:", req.body.password);
-  console.log("request:", req);
-
   try {
     const { email, password } = req.body;
     // check if email and password are provided
@@ -45,7 +37,6 @@ const login = async (req, res, next) => {
     }
     // find user by email
     const user = await User.findOne({ email: email.toLowerCase() });
-    console.log("Found user:", user);
 
     if (!user) {
       throw new UnauthenticatedError("Invalid credentials");
@@ -57,10 +48,8 @@ const login = async (req, res, next) => {
       throw new UnauthenticatedError("Invalid credentials");
     }
 
-    console.log("Found user:", user);
     // generate JWT token and response
     const token = user.createJWT();
-    console.log("Generated Jwt token:", token);
     const expiresIn = process.env.JWT_EXPIRES_IN || 3600;
     res.cookie("token", token, {
       maxAge: parseInt(expiresIn) * 1000,
@@ -85,7 +74,6 @@ const login = async (req, res, next) => {
 // Request password rest (Send email with reset token)
 const requestPasswordReset = async (req, res) => {
   const { email } = req.body;
-  console.log("Email received:", email);
 
   if (!email) {
     throw new BadRequestError("Please provide an email address.");
@@ -110,17 +98,13 @@ const requestPasswordReset = async (req, res) => {
         passwordResetExpires: Date.now() + 3600000,
       }
     );
-    console.log("Password reset token and expiration updated successfully.");
   } catch (error) {
     console.error("Error updating password reset info:", error);
   }
 
-  console.log("User document after save:", user);
-
   // send email with reset token
   // const resetUrl = `http://localhost:8000/api/v1/user/reset-password/${resetToken}`;
   const isProduction = process.env.NODE_ENV === "production";
-  console.log(`Running in  ${process.env.NODE_ENV} mode`);
   const resetUrl = isProduction
     ? "https://production-domain.com/resetPassword/"
     : "http://localhost:5173/resetpassword/";
@@ -133,7 +117,6 @@ const requestPasswordReset = async (req, res) => {
     //   subject: "Password Reset Request",
     //   message,
     // });
-    console.log("Email sent successfully.");
     res.status(StatusCodes.OK).json({ msg: "Password reset email sent" });
   } catch (error) {
     console.error("Error details:", error);
@@ -145,9 +128,6 @@ const requestPasswordReset = async (req, res) => {
 const resetPassword = async (req, res) => {
   const { resetToken, newPassword } = req.body;
 
-  console.log("Received resetToken:", resetToken);
-  console.log("Received newPassword:", newPassword);
-
   if (!resetToken || !newPassword) {
     throw new BadRequestError("Please provide a valid token and new password");
   }
@@ -157,22 +137,9 @@ const resetPassword = async (req, res) => {
     passwordResetExpires: { $gt: Date.now() },
   });
 
-  console.log("Current time:", Date.now());
-
-  console.log(
-    "Database stored resetToken:",
-    user ? user.passwordResetToken : null
-  );
-  console.log(
-    "Database stored passwordResetExpires:",
-    user ? user.passwordResetExpires : null
-  );
-
   if (!user) {
     throw new NotFoundError("Invalid or expired password reset token.");
   }
-
-  console.log("User found, resetting password...");
 
   // hash the new password
   user.password = await bcrypt.hash(newPassword, 12);
