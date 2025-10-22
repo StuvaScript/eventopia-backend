@@ -51,7 +51,6 @@ const UserSchema = new mongoose.Schema(
       maxlength: 2,
       validate: {
         validator: function (value) {
-          console.log(value);
           return /^[A-Z]{2}$/.test(value);
         },
 
@@ -69,7 +68,7 @@ UserSchema.pre("save", async function (next) {
   this.firstName = this.firstName.trim();
   this.lastName = this.lastName.trim();
   const salt = await bcrypt.genSalt(10);
-  // this.password = await bcrypt.hash(this.password, salt); // <--- commented out per Uma and Josh
+  this.password = await bcrypt.hash(this.password, salt); // <--- commented out per Uma and Josh
   next();
 });
 
@@ -86,5 +85,3 @@ UserSchema.methods.comparePassword = async function (userPassword) {
 };
 
 module.exports = mongoose.model("User", UserSchema);
-
-

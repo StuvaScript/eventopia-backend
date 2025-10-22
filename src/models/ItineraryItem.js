@@ -43,11 +43,11 @@ const ItineraryItemSchema = new mongoose.Schema(
       coordinates: {
         lat: {
           type: Number,
-          required: [true, "Error: no latitude provided for venue."],
+          // required: [true, "Error: no latitude provided for venue."],
         },
         lng: {
           type: Number,
-          required: [true, "Error: no longitude provided for venue."],
+          // required: [true, "Error: no longitude provided for venue."],
         },
       },
     },

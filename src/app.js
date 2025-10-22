@@ -17,9 +17,8 @@ const errorHandleMiddleware = require("./middleware/error_handler");
 const userRouter = require("./routes/user");
 const itineraryRouter = require("./routes/itineraryRouter");
 const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
-const nodemailerRouter = require("./routes/nodemailerRouter");
+// const nodemailerRouter = require("./routes/nodemailerRouter");
 
-// CORS
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
@@ -47,7 +46,7 @@ const apiLimiter = rateLimit({
 app.use("/api", apiLimiter);
 
 // Routes
-app.use("/api/email", nodemailerRouter);
+// app.use("/api/email", nodemailerRouter);
 app.use("/api/ticketmaster", ticketmasterRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/itinerary", itineraryRouter);
