@@ -19,11 +19,16 @@ const itineraryRouter = require("./routes/itineraryRouter");
 const ticketmasterRouter = require("./routes/ticketmasterRouter.js");
 // const nodemailerRouter = require("./routes/nodemailerRouter");
 
+if (!process.env.CORS_ORIGIN) {
+  console.error("Missing CORS_ORIGIN from env file");
+  process.exit(1);
+}
+
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true,
-  })
+  }),
 );
 
 // Middleware
@@ -34,7 +39,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(mongoSanitize());
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
-app.use(express.json());
 
 app.set("trust proxy", 1);
 
@@ -53,13 +57,6 @@ app.use("/api/v1/itinerary", itineraryRouter);
 
 // Error Handling Middleware
 app.use(notFoundMiddleware);
-app.use((err, req, res, next) => {
-  console.error("Error stack:", err.stack);
-  res
-    .status(err.status || 500)
-    .json({ error: err.message || "Internal Server Error" });
-});
-
 app.use(errorHandleMiddleware);
 
 module.exports = app;

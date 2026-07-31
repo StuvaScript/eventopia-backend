@@ -77,6 +77,11 @@ const createItineraryItem = async (req, res) => {
 
     return res.status(201).json({ itineraryItem });
   } catch (error) {
+    if (error.code === 11000) {
+      return res
+        .status(StatusCodes.CONFLICT)
+        .json({ error: "This event is already saved to your planner." });
+    }
     console.error("Error in createItineraryItem:", error);
     return res.status(500).json({ error: "Internal server error" });
   }

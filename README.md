@@ -8,6 +8,86 @@ in case you need assistance from your mentors.
 
 > The back-end server will be running on port 8000. The front-end app will be running on port 3000. You will need to run both the back-end server and the front-end app at the same time to test your app.
 
+## Setting up the VS Code Debugger
+
+1. On your local machine create a new folder
+2. Bring in both the `plantasy-back` and the `plantasy-front` directories into that newly created parent folder
+3. In the parent folder create another child folder called `.vscode` which will be a sibling to the other two directories
+4. In the `.vscode` folder create two files called:
+   - `launch.json`
+   - `tasks.json`
+5. Paste the following in the `launch.json` file:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Backend (Node)",
+      "program": "${workspaceFolder}/eventopia-backend/src/server.js",
+      "cwd": "${workspaceFolder}/eventopia-backend",
+      "envFile": "${workspaceFolder}/eventopia-backend/.env",
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Frontend (React)",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/eventopia-frontend",
+      "preLaunchTask": "Start Frontend Dev Server",
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack App",
+      "configurations": ["Backend (Node)", "Frontend (React)"],
+      "stopAll": true
+    }
+  ]
+}
+```
+
+6. Paste the following in the `tasks.json` file:
+
+```json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Frontend Dev Server",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/eventopia-frontend"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^$"
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "VITE",
+          "endsPattern": "ready in"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    }
+  ]
+}
+```
+
+7. Open VS Code from the parent directory and now you should be able to run the debugger
+   - Just make sure the servers are not already in use
+
 ### Setting up local development environment
 
 1. Create a folder to contain both the front-end and back-end repos
@@ -50,7 +130,6 @@ The API returns consistent error responses:
 #### User Routes
 
 1. Register
-
    - Method: POST
    - URL: http://localhost:8000/api/v1/user/register
    - JSON Request Body:
@@ -67,7 +146,6 @@ The API returns consistent error responses:
    ```
 
 2. Login
-
    - Method: POST
    - URL: http://localhost:8000/api/v1/user/login
    - JSON Request Body:
@@ -82,7 +160,6 @@ The API returns consistent error responses:
 #### Password Reset Routes
 
 1. Request Password Reset
-
    - Method: POST
    - URL: http://localhost:8000/api/v1/user/forgot-password
    - JSON Request Body:
@@ -94,7 +171,6 @@ The API returns consistent error responses:
    ```
 
 2. Reset Password
-
    - Method: POST
    - URL: http://localhost:8000/api/v1/user/reset-password
    - JSON Request Body:
@@ -154,19 +230,16 @@ classification: "Sports"
 #### Itinerary Routes:
 
 1. Get All Itinerary:
-
    - Method: GET
    - URL: http://localhost:8000/api/v1/itinerary/
    - Requires: Authentication token
 
 2. Get Single Itinerary Item:
-
    - Method: GET
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
    - Requires: Authentication token
 
 3. Create Itinerary Item:
-
    - Method: POST
    - URL: http://localhost:8000/api/v1/itinerary/
    - Requires: Authentication token
@@ -196,7 +269,6 @@ classification: "Sports"
    ```
 
 4. Update Itinerary Item:
-
    - Method: PATCH
    - URL: http://localhost:8000/api/v1/itinerary/:<id>
    - Requires: Authentication token
@@ -233,7 +305,6 @@ classification: "Sports"
 #### Event Sharing Route
 
 1. Share Event
-
    - Method: POST
    - URL: http://localhost:8000/api/email/share-event
    - JSON Request Body:
