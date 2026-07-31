@@ -1,5 +1,4 @@
 const crypto = require("crypto");
-const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
 const { BadRequestError } = require("../errors/bad_request");
@@ -19,6 +18,9 @@ const register = async (req, res) => {
   } catch (error) {
     if (error.code === 11000) {
       res.status(StatusCodes.BAD_REQUEST).json({ msg: "Email already exist" });
+    } else if (error.name === "ValidationError") {
+      const messages = Object.values(error.errors).map((e) => e.message);
+      res.status(StatusCodes.BAD_REQUEST).json({ msg: messages.join(" ") });
     } else {
       console.error("Registration Error:", error);
       res
@@ -72,86 +74,81 @@ const login = async (req, res, next) => {
 };
 
 // Request password rest (Send email with reset token)
-const requestPasswordReset = async (req, res) => {
-  const { email } = req.body;
-
-  if (!email) {
-    throw new BadRequestError("Please provide an email address.");
-  }
-  // check if user exists
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw new NotFoundError("User with this email does not exist.");
-  }
-  // generate a rest token (secure token)
-  const resetToken = crypto.randomBytes(20).toString("hex");
-  // set reset token and expiration date (e.g., 1 hour)
-
-  user.passwordResetToken = resetToken;
-  user.passwordResetExpires = Date.now() + 3600000; // 1 hour
-
+const requestPasswordReset = async (req, res, next) => {
   try {
+    const { email } = req.body;
+
+    if (!email) {
+      throw new BadRequestError("Please provide an email address.");
+    }
+    // check if user exists
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      throw new NotFoundError("User with this email does not exist.");
+    }
+    // generate a rest token (secure token)
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    // set reset token and expiration date (e.g., 1 hour)
     await User.updateOne(
       { _id: user._id },
       {
         passwordResetToken: resetToken,
-        passwordResetExpires: Date.now() + 3600000,
-      }
+        passwordResetExpires: Date.now() + 3600000, // 1 hour
+      },
     );
-  } catch (error) {
-    console.error("Error updating password reset info:", error);
-  }
 
-  // send email with reset token
-  // const resetUrl = `http://localhost:8000/api/v1/user/reset-password/${resetToken}`;
-  const isProduction = process.env.NODE_ENV === "production";
-  const resetUrl = isProduction
-    ? "https://production-domain.com/resetPassword/"
-    : "http://localhost:5173/resetpassword/";
+    // send email with reset token
+    // CORS_ORIGIN is already the frontend's exact origin
+    const frontendOrigin = process.env.CORS_ORIGIN;
+    const resetUrl = `${frontendOrigin}/resetpassword/`;
 
-  const message = `Click the following link to reset your password: ${resetUrl}${resetToken}`;
+    const message = `Click the following link to reset your password: ${resetUrl}${resetToken}`;
 
-  try {
-    // await sendEmail({
-    //   to: email,
-    //   subject: "Password Reset Request",
-    //   message,
-    // });
+    await sendEmail({
+      to: email,
+      subject: "Password Reset Request",
+      message,
+    });
+
     res.status(StatusCodes.OK).json({ msg: "Password reset email sent" });
   } catch (error) {
-    console.error("Error details:", error);
-    throw new BadRequestError("Error sending password reset email");
+    next(error);
   }
 };
 
 // Reset password
-const resetPassword = async (req, res) => {
-  const { resetToken, newPassword } = req.body;
-
-  if (!resetToken || !newPassword) {
-    throw new BadRequestError("Please provide a valid token and new password");
-  }
-  // find user with the reset token
-  const user = await User.findOne({
-    passwordResetToken: resetToken,
-    passwordResetExpires: { $gt: Date.now() },
-  });
-
-  if (!user) {
-    throw new NotFoundError("Invalid or expired password reset token.");
-  }
-
-  // hash the new password
-  user.password = await bcrypt.hash(newPassword, 12);
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
-
+const resetPassword = async (req, res, next) => {
   try {
+    const { resetToken, newPassword } = req.body;
+
+    if (!resetToken || !newPassword) {
+      throw new BadRequestError(
+        "Please provide a valid token and new password",
+      );
+    }
+    // find user with the reset token
+    const user = await User.findOne({
+      passwordResetToken: resetToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      throw new NotFoundError("Invalid or expired password reset token.");
+    }
+
+    // assign the raw password; the pre("save") hook hashes it once
+    user.password = newPassword;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+
     await user.save(); // Save the updated user document
     res.status(StatusCodes.OK).json({ msg: "Password reset successful" });
   } catch (error) {
-    console.error("Error saving user after password reset:", error);
-    throw new BadRequestError("Error saving new password");
+    if (error.name === "ValidationError") {
+      const messages = Object.values(error.errors).map((e) => e.message);
+      return res.status(StatusCodes.BAD_REQUEST).json({ msg: messages.join(" ") });
+    }
+    next(error);
   }
 };
 

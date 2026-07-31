@@ -5,10 +5,6 @@ const ItineraryItemSchema = new mongoose.Schema(
     ticketmasterId: {
       type: String,
       required: [true, "Error: no ticketmasterId provided for itinerary item."],
-      unique: [
-        true,
-        "Error: duplicate ticketmasterId provided for itinerary item.",
-      ],
     },
     name: {
       type: String,
@@ -68,5 +64,9 @@ const ItineraryItemSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// A user can't save the same event twice, but different users can each save
+// the same event independently.
+ItineraryItemSchema.index({ user: 1, ticketmasterId: 1 }, { unique: true });
 
 module.exports = mongoose.model("ItineraryItem", ItineraryItemSchema);

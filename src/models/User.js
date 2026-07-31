@@ -67,8 +67,10 @@ UserSchema.pre("save", async function (next) {
   this.email = this.email.toLowerCase().trim();
   this.firstName = this.firstName.trim();
   this.lastName = this.lastName.trim();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt); // <--- commented out per Uma and Josh
+  if (this.isModified("password")) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
   next();
 });
 
